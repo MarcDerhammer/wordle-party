@@ -1,55 +1,149 @@
 <template>
-  <v-app>
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
+  <v-app style="overflow: hidden">
+    <top-bar
+      :currentRoom="currentRoom"
+      :username="username"
+      @changeUsername="changeUsername = true"
+    />
     <v-main>
-      <router-view />
+      <router-view
+        :currentRoom="currentRoom"
+        @create="create"
+        @join="showJoin = true"
+        @leave="leave"
+        @guess="guess"
+        :gameState="gameState"
+      />
     </v-main>
+    <v-dialog max-width="400" v-model="changeUsername">
+      <v-card>
+        <v-card-title>What should we call you?</v-card-title>
+        <v-card-text>
+          <v-text-field
+            autofocus
+            @keyup.enter="setName(tempUsername)"
+            v-model="tempUsername"
+          >
+          </v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="changeUsername = false">Close</v-btn>
+          <v-spacer />
+          <v-btn
+            :disabled="!tempUsername"
+            color="primary"
+            @click="setName(tempUsername)"
+            >Submit</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog max-width="400" v-model="showJoin">
+      <v-card>
+        <v-card-title>Enter room code!</v-card-title>
+        <v-card-text>
+          <v-text-field
+            autofocus
+            @keyup.enter="join(roomCode)"
+            v-model="roomCode"
+            counter="4"
+          >
+          </v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="showJoin = false">Close</v-btn>
+          <v-spacer />
+          <v-btn
+            :disabled="!roomCode || roomCode.length !== 4"
+            color="primary"
+            @click="joinRoom(roomCode)"
+            >Submit</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
 <script>
+import TopBar from "./components/TopBar.vue";
 export default {
+  components: { TopBar },
   name: "App",
-
   data: () => ({
-    //
+    username: null,
+    changeUsername: false,
+    tempUsername: null,
+    currentRoom: null,
+    roomCode: null,
+    showJoin: false,
+    gameState: []
   }),
-  sockets: {
-    connect: () => {
-      console.log('connected!!');
+  created() {
+    this.username = localStorage.getItem("name");
+    if (!this.username) {
+      this.setName("Anon-" + this.getRandomIntInclusive(0, 50));
     }
-  }
+    const lastRoom = localStorage.getItem("lastRoom");
+    if (lastRoom) {
+      this.join(lastRoom);
+    }
+  },
+  methods: {
+    getRandomIntInclusive(min, max) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+    },
+    create() {
+      this.$socket.emit("create", "somedata");
+    },
+    join(room) {
+      console.log("tryin to join");
+      this.$socket.emit("join", room);
+    },
+    setName(name) {
+      this.username = name;
+      localStorage.setItem("name", name);
+      this.$socket.emit("setName", name);
+      this.changeUsername = false;
+    },
+    leave(room) {
+      console.log('Trying to leave ' + room);
+      this.$socket.emit('leave', room);
+    },
+    guess(word) {
+      const payload = {
+        room: this.currentRoom,
+        word
+      }
+      this.$socket.emit('guess', payload);
+    }
+  },
+  sockets: {
+    connect: function () {
+      console.log("connected!!");
+      if (this.username) {
+        this.setName(this.username);
+      }
+    },
+    roomCreated: function (room) {
+      this.join(room);
+    },
+    roomJoined: function (room) {
+      this.currentRoom = room;
+      this.showJoin = false;
+      localStorage.setItem("lastRoom", room);
+    },
+    roomLeft: function (room) {
+      this.currentRoom = null;
+      console.log('left room ' + room);
+      localStorage.setItem('lastRoom', null);
+    },
+    gameState: function(state) {
+      this.gameState = state;
+      console.log(this.gameState);
+    }
+  },
 };
 </script>
