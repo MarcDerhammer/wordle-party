@@ -77,7 +77,7 @@ export default {
     currentRoom: null,
     roomCode: null,
     showJoin: false,
-    gameState: []
+    gameState: [],
   }),
   created() {
     this.username = localStorage.getItem("name");
@@ -109,16 +109,16 @@ export default {
       this.changeUsername = false;
     },
     leave(room) {
-      console.log('Trying to leave ' + room);
-      this.$socket.emit('leave', room);
+      console.log("Trying to leave " + room);
+      this.$socket.emit("leave", room);
     },
     guess(word) {
       const payload = {
         room: this.currentRoom,
-        word
-      }
-      this.$socket.emit('guess', payload);
-    }
+        word,
+      };
+      this.$socket.emit("guess", payload);
+    },
   },
   sockets: {
     connect: function () {
@@ -137,13 +137,13 @@ export default {
     },
     roomLeft: function (room) {
       this.currentRoom = null;
-      console.log('left room ' + room);
-      localStorage.setItem('lastRoom', null);
+      console.log("left room " + room);
+      localStorage.setItem("lastRoom", null);
     },
-    gameState: function(state) {
+    gameState: function (state) {
       this.gameState = state;
       console.log(this.gameState);
-    }
+    },
   },
 };
 </script>

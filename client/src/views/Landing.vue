@@ -13,6 +13,9 @@
         <v-col cols="12" md="6">
           <v-btn @click="$emit('leave', currentRoom)" small>Leave Room</v-btn>
         </v-col>
+        <v-col cols="12" md="6" v-if="gameState && (gameState.won || gameState.lost)">
+          <v-btn @click="$emit('restart', currentRoom)" small>New Game</v-btn>
+        </v-col>
         <v-col justify="center" align="center">
           <game :rows="gameState" />
         </v-col>
@@ -26,10 +29,20 @@
             append-outer-icon="mdi-send"
             @click:append-outer="guess"
             v-model="guessInput"
+            @keyup.enter="guess"
+            @input="checkInput"
           ></v-text-field>
         </v-col>
       </v-row>
     </div>
+    <v-snackbar v-model="snackbar">
+      {{ text }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="pink" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -41,16 +54,70 @@ export default {
     Game,
   },
   methods: {
+    checkInput() {
+      if (this.guessInput && this.guessInput.length > 5) {
+        this.guessInput = this.guessInput.substring(0, 5);
+      }
+    },
     guess() {
-      this.$emit("guess", this.guessInput);
+      const regex = new RegExp(/^[a-z0-9]+$/i);
+      this.guessInput = this.guessInput.trim();
+      if (
+        !regex.test(this.guessInput) ||
+        !this.guessInput ||
+        this.guessInput.length !== 5
+      ) {
+        console.log("invalid");
+        this.text = "Invalid input!";
+        this.guessInput = "";
+        this.snackbar = true;
+        return;
+      }
+      this.$emit("guess", this.guessInput.trim());
+      this.guessInput = "";
     },
   },
   data: () => ({
     guessInput: null,
+    snackbar: false,
+    text: "",
   }),
   props: {
     currentRoom: String,
-    gameState: Array
+    gameState: Array,
+  },
+  sockets: {
+    badGuess: function (word) {
+      this.snackbar = true;
+      this.text = `"${word}" is not in the valid word list!`
+    },
+    win: function(count) {
+      this.snackbar = true;
+      switch(count) {
+        case 1:
+          this.text = 'NO FUCKING WAY';
+          break;
+        case 2:
+          this.text = 'Amazing';
+          break;
+        case 3:
+          this.text = 'Wicked!'
+          break;
+        case 4:
+          this.text = 'Nice job';
+          break;
+        case 5: 
+          this.text = 'You did it!';
+          break;
+        case 6:
+          this.text = 'Nice, that was close!';
+          break;
+      }
+    },
+    lose: function(word) {
+      this.snackbar = true;
+      this.text = `Aw you suck, the word was "${word}"`
+    }
   },
 };
 </script>
