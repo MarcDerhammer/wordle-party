@@ -46,5 +46,10 @@ export default {
   data: () => ({
     //
   }),
+  sockets: {
+    connect: () => {
+      console.log('connected!!');
+    }
+  }
 };
 </script>
