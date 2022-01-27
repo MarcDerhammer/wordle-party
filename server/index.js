@@ -36,6 +36,7 @@ const emitGameState = (roomName) => {
     state: room.state,
     won: room.won,
     lost: room.lost,
+    answerWas: room.answerWas
   };
 
   io.to(roomName).emit("gameState", payload);
@@ -80,11 +81,8 @@ server.listen(PORT, () => {
 
 io.on("connection", (socket) => {
   console.log("A user has connected!");
-  socket.on("join", (data) => {
-    console.log(data);
-  });
   socket.on("create", (data) => {
-    console.log("create called!");
+    console.log("Create called with: " + data);
     const roomName = Math.random().toString(36).substring(2, 6).toUpperCase();
     rooms = rooms.filter((x) => x.name != roomName);
     rooms.push({
@@ -97,7 +95,7 @@ io.on("connection", (socket) => {
     saveRoomsState();
   });
   socket.on("join", (data) => {
-    console.log(socket.username + " is joining " + data);
+    console.log(socket.username || '[unknown]' + " is attempting to join " + data);
     if (rooms.find((x) => x.name === data)) {
       socket.join(data);
       socket.emit("roomJoined", data);
@@ -116,9 +114,8 @@ io.on("connection", (socket) => {
     console.log(socket.username + " name set");
   });
   socket.on("newGame", (payload) => {
-    console.log("New game called");
+    console.log("New game called by " + socket.username || '[Unknown]');
     const roomName = payload.room;
-
     const existingRoom = rooms.find((x) => x.name === roomName);
     if (!existingRoom || !existingRoom.done) {
       console.log("Game is not over yet...");
@@ -195,7 +192,6 @@ io.on("connection", (socket) => {
           correctWordCopy.indexOf(letter.letter),
           "."
         );
-        console.log(correctWordCopy);
       } else {
         letter.status = "wrong";
       }
@@ -210,6 +206,7 @@ io.on("connection", (socket) => {
     } else if (room.state.length === 6) {
       room.lost = true;
       room.done = true;
+      room.answerWas = correctWord;
       io.to(channel).emit("lose", correctWord);
     }
     emitGameState(channel);
