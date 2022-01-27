@@ -134,6 +134,15 @@ io.on("connection", (socket) => {
     emitGameState(roomName);
     saveRoomsState();
   });
+  socket.on("typing", (data) => {
+    const room = data.room;
+    const input = data.guessInput;
+    io.to(room).emit("liveGuess", {
+        id: socket.id,
+        name: socket.username || 'Someone',
+        guessInput: input
+    });
+  });
   socket.on("guess", (data) => {
     const word = data.word.toUpperCase().trim().substring(0, 5);
     const channel = data.room;
@@ -143,7 +152,7 @@ io.on("connection", (socket) => {
       return;
     }
 
-    if (!fullValidWordList.includes(word.toLowerCase())) {
+    if (!fullValidWordList.includes(word.toLowerCase()) && word !== correctWord) {
       socket.emit("badGuess", word);
       return;
     }

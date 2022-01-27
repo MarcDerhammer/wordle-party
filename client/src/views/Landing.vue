@@ -43,7 +43,6 @@
       <v-row
         style="max-width: 500px; margin: auto; margin-top: 14px"
         justify="center"
-        align="center"
       >
         <v-col cols="6" md="6">
           <v-btn color="error" @click="$emit('leave', currentRoom)" small
@@ -58,6 +57,14 @@
           <v-btn color="primary" @click="$emit('newGame', currentRoom)" small
             >New Game</v-btn
           >
+        </v-col>
+        <v-col cols="6" md="6" v-else>
+          <mini-guess
+            v-for="(guess, index) in liveGuesses"
+            v-bind:key="index"
+            :name="guess.name"
+            :guessInput="guess.guessInput"
+          />
         </v-col>
       </v-row>
     </div>
@@ -74,6 +81,7 @@
 
 <script>
 import Game from "../components/Game.vue";
+import MiniGuess from "../components/MiniGuess.vue";
 import VirtualKeyboard from "../components/VirtualKeyboard.vue";
 
 export default {
@@ -81,22 +89,35 @@ export default {
   components: {
     Game,
     VirtualKeyboard,
+    MiniGuess,
   },
   methods: {
+    emitTyping() {
+      this.$socket.emit("typing", {
+        guessInput: this.guessInput,
+        room: this.currentRoom,
+      });
+    },
     handleVKeyboardPress(key) {
       if (key === "backspace") {
         this.guessInput = this.guessInput.substring(
           0,
           this.guessInput.length - 1
         );
+        this.emitTyping();
         return;
       }
       if (key === "enter") {
         this.guess();
         this.guessInput = "";
+        this.emitTyping();
+        return;
+      }
+      if (this.guessInput.length >= 5) {
         return;
       }
       this.guessInput += key;
+      this.emitTyping();
     },
     checkInput() {
       if (this.guessInput && this.guessInput.length > 5) {
@@ -124,6 +145,7 @@ export default {
     guessInput: "",
     snackbar: false,
     text: "",
+    liveGuesses: [],
   }),
   props: {
     currentRoom: String,
@@ -131,6 +153,12 @@ export default {
     dialogOpen: Boolean,
   },
   sockets: {
+    liveGuess: function (data) {
+      this.liveGuesses = this.liveGuesses.filter((x) => x.id !== data.id);
+      if (this.$socket.id !== data.id && data.guessInput) {
+        this.liveGuesses.unshift(data);
+      }
+    },
     badGuess: function (word) {
       this.snackbar = true;
       this.text = `"${word}" is not in the valid word list!`;

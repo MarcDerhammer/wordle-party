@@ -114,7 +114,7 @@ export default {
       this.$socket.emit("join", room);
     },
     start(word) {
-      console.log('starting with ' + word);
+      console.log("starting with " + word);
       this.$socket.emit("newGame", {
         room: this.currentRoom,
         word,

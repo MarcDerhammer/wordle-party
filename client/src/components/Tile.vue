@@ -2,6 +2,7 @@
   <div
     class="baseTile"
     :class="
+      mini ? 'baseTileMini ' : 'baseTile ' + 
       status === 'correct'
         ? 'correct'
         : status === 'wrong'
@@ -22,6 +23,10 @@ export default {
   props: {
     letter: String,
     status: String,
+    mini: {
+      type: Boolean,
+      default: false
+    }
   },
 };
 </script>
@@ -33,6 +38,17 @@ export default {
   height: 52px;
   font-size: 2.5rem;
   margin: 2px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  margin-bottom: 28px;
+}
+.baseTileMini {
+  border: solid 1px gray;
+  width: 15px;
+  height: 15px;
+  font-size: 0.7rem;
+  margin: 1px;
   justify-content: center;
   align-items: center;
   display: flex;
