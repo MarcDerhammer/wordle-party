@@ -61,6 +61,13 @@
             >New Game</v-btn
           >
         </v-col>
+        <v-col
+          cols="6"
+          md="6"
+          v-if="gameState && gameState.lost && gameState.answerWas"
+        >
+          <span>It was {{gameState.answerWas}}</span>
+        </v-col>
         <v-col cols="6" md="6" v-else>
           <mini-guess
             v-for="(guess, index) in liveGuesses"
