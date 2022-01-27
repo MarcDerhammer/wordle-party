@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row no-gutters align="center" justify="center">
-      <v-col cols="6" style="text-align: right; padding-right: 20px">
+      <v-col cols="6" style="text-align: right; padding-right: 20px; white-space: nowrap">
         {{ name }}:
       </v-col>
       <v-col cols="6">
