@@ -1,5 +1,5 @@
 <template>
-  <div style="max-width: 500px; margin: auto">
+  <div style="max-width: 500px; margin: auto; touch-action: manipulation">
     <v-row class="keyRow" align="center">
       <div
         @click="$emit('key', l)"
@@ -117,6 +117,7 @@ export default {
   justify-content: center;
   align-items: center;
   display: flex;
+  touch-action: manipulation;
 }
 .yellow {
   background-color: rgb(134, 113, 45) !important;
