@@ -6,7 +6,11 @@
       v-for="(row, index) in rows"
       v-bind:key="index"
     >
-      <Row :tiles="row.tiles" />
+      <Row
+        :showGuess="firstEmptyIndex === index"
+        :tiles="row.tiles"
+        :guessInput="guessInput"
+      />
     </v-row>
   </div>
 </template>
@@ -21,6 +25,12 @@ export default {
   data: () => ({}),
   props: {
     rows: Array,
+    guessInput: String,
+  },
+  computed: {
+    firstEmptyIndex() {
+      return this.rows.findIndex((x) => x.tiles.find((y) => !y.status));
+    },
   },
 };
 </script>

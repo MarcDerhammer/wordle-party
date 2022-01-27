@@ -21,10 +21,10 @@
           <v-btn @click="$emit('newGame', currentRoom)" small>New Game</v-btn>
         </v-col>
         <v-col cols="12" justify="center" align="center">
-          <game :rows="gameState.rows" />
+          <game :rows="gameState.rows" :guessInput="guessInput" />
         </v-col>
       </v-row>
-      <v-row align="center">
+      <v-row v-if="false" align="center">
         <v-col justify="center">
           <v-text-field
             clearable
@@ -38,6 +38,9 @@
           ></v-text-field>
         </v-col>
       </v-row>
+      <div style="margin-top: 15px">
+        <virtual-keyboard @key="handleVKeyboardPress" :gameState="gameState" />
+      </div>
     </div>
     <v-snackbar top v-model="snackbar">
       {{ text }}
@@ -52,12 +55,31 @@
 
 <script>
 import Game from "../components/Game.vue";
+import VirtualKeyboard from "../components/VirtualKeyboard.vue";
+
 export default {
   name: "TopBar",
   components: {
     Game,
+    VirtualKeyboard,
   },
   methods: {
+    handleVKeyboardPress(key) {
+      if (key === "backspace") {
+        this.guessInput = this.guessInput.substring(
+          0,
+          this.guessInput.length - 1
+        );
+        return;
+      }
+      if (key === "enter") {
+        this.guess();
+        this.guessInput = "";
+        return;
+      }
+      this.guessInput += key;
+      console.log(this.guessInput);
+    },
     checkInput() {
       if (this.guessInput && this.guessInput.length > 5) {
         this.guessInput = this.guessInput.substring(0, 5);
@@ -82,7 +104,7 @@ export default {
     },
   },
   data: () => ({
-    guessInput: null,
+    guessInput: "",
     snackbar: false,
     text: "",
   }),

@@ -32,6 +32,7 @@ export default {
   width: 62px;
   height: 62px;
   font-size: 2.5rem;
+  margin: 2px;
 }
 .wrong {
   background-color: rgb(75, 75, 75);
