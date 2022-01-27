@@ -58,7 +58,7 @@
           <v-btn
             :disabled="!roomCode || roomCode.length !== 4"
             color="primary"
-            @click="joinRoom(roomCode)"
+            @click="join(roomCode)"
             >Submit</v-btn
           >
         </v-card-actions>
