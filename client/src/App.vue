@@ -96,10 +96,6 @@ export default {
     if (!this.username) {
       this.setName("Anon-" + this.getRandomIntInclusive(0, 50));
     }
-    const lastRoom = localStorage.getItem("lastRoom");
-    if (lastRoom) {
-      this.join(lastRoom);
-    }
   },
   methods: {
     getRandomIntInclusive(min, max) {
@@ -152,6 +148,11 @@ export default {
       }
       if (this.$route.params.id) {
         this.join(this.$route.params.id);
+      } else {
+        const lastRoom = localStorage.getItem("lastRoom");
+        if (lastRoom) {
+          this.join(lastRoom);
+        }
       }
     },
     roomCreated: function (room) {
