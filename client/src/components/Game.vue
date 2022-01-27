@@ -10,6 +10,7 @@
         :showGuess="firstEmptyIndex === index"
         :tiles="row.tiles"
         :guessInput="guessInput"
+        :author="row.author"
       />
     </v-row>
   </div>
@@ -25,7 +26,7 @@ export default {
   data: () => ({}),
   props: {
     rows: Array,
-    guessInput: String,
+    guessInput: String
   },
   computed: {
     firstEmptyIndex() {

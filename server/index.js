@@ -201,7 +201,7 @@ io.on("connection", (socket) => {
       }
     });
 
-    room.state.push({ tiles: newRow });
+    room.state.push({ tiles: newRow, author: socket.username });
 
     if (correctWord === word) {
       room.won = true;
