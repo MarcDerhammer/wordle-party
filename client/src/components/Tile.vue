@@ -1,17 +1,5 @@
 <template>
-  <div
-    class="baseTile"
-    :class="
-      mini ? 'baseTileMini ' : 'baseTile ' + 
-      status === 'correct'
-        ? 'correct'
-        : status === 'wrong'
-        ? 'wrong'
-        : status === 'partial'
-        ? 'partial'
-        : ''
-    "
-  >
+  <div :class="getClass(status)">
     {{ letter }}
   </div>
 </template>
@@ -20,13 +8,36 @@
 export default {
   name: "Tile",
   data: () => ({}),
+  methods: {
+    getClass(status) {
+      let cl = "baseTile";
+      if (this.mini) {
+        cl += "Mini";
+      }
+      cl += " ";
+      switch (status) {
+        case "correct":
+          cl += "correct";
+          break;
+        case "partial":
+          cl += "partial";
+          break;
+        case "wrong":
+          cl += "wrong";
+          break;
+        default:
+          break;
+      }
+      return cl;
+    },
+  },
   props: {
     letter: String,
     status: String,
     mini: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 };
 </script>
