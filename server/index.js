@@ -115,8 +115,10 @@ io.on("connection", (socket) => {
     socket.username = data;
     console.log(socket.username + " name set");
   });
-  socket.on("newGame", (roomName) => {
+  socket.on("newGame", (payload) => {
     console.log("New game called");
+    const roomName = payload.room;
+
     const existingRoom = rooms.find((x) => x.name === roomName);
     if (!existingRoom || !existingRoom.done) {
       console.log("Game is not over yet...");
@@ -127,7 +129,7 @@ io.on("connection", (socket) => {
     rooms.push({
       name: roomName,
       state: [],
-      word: getRandomWord(),
+      word: payload.word || getRandomWord(),
     });
     emitGameState(roomName);
     saveRoomsState();

@@ -34,9 +34,17 @@
         </v-col>
       </v-row>
       <div style="margin-top: 15px">
-        <virtual-keyboard @key="handleVKeyboardPress" :gameState="gameState" />
+        <virtual-keyboard
+          :dialogOpen="dialogOpen"
+          @key="handleVKeyboardPress"
+          :gameState="gameState"
+        />
       </div>
-      <v-row style="margin-top: 14px" justify="center" align="center">
+      <v-row
+        style="max-width: 500px; margin: auto; margin-top: 14px"
+        justify="center"
+        align="center"
+      >
         <v-col cols="6" md="6">
           <v-btn color="error" @click="$emit('leave', currentRoom)" small
             >Leave Room</v-btn
@@ -89,7 +97,6 @@ export default {
         return;
       }
       this.guessInput += key;
-      console.log(this.guessInput);
     },
     checkInput() {
       if (this.guessInput && this.guessInput.length > 5) {
@@ -104,7 +111,6 @@ export default {
         !this.guessInput ||
         this.guessInput.length !== 5
       ) {
-        console.log("invalid");
         this.text = "Invalid input!";
         this.guessInput = "";
         this.snackbar = true;
@@ -122,6 +128,7 @@ export default {
   props: {
     currentRoom: String,
     gameState: Object,
+    dialogOpen: Boolean,
   },
   sockets: {
     badGuess: function (word) {

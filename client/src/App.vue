@@ -14,6 +14,7 @@
         @guess="guess"
         @newGame="newGame"
         :gameState="gameState"
+        :dialogOpen="dialogOpen"
       />
     </v-main>
     <v-dialog max-width="400" v-model="changeUsername">
@@ -31,7 +32,7 @@
           <v-btn @click="changeUsername = false">Close</v-btn>
           <v-spacer />
           <v-btn
-            :disabled="!tempUsername"
+            :disabled="!tempUsername || tempUsername.length > 8"
             color="primary"
             @click="setName(tempUsername)"
             >Submit</v-btn
@@ -63,13 +64,17 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog max-width="400" v-model="showNewGame">
+      <new-game-options @start="start" @close="showNewGame = false" />
+    </v-dialog>
   </v-app>
 </template>
 
 <script>
+import NewGameOptions from "./components/NewGameOptions.vue";
 import TopBar from "./components/TopBar.vue";
 export default {
-  components: { TopBar },
+  components: { TopBar, NewGameOptions },
   name: "App",
   data: () => ({
     username: null,
@@ -79,7 +84,13 @@ export default {
     roomCode: null,
     showJoin: false,
     gameState: {},
+    showNewGame: false,
   }),
+  computed: {
+    dialogOpen() {
+      return this.showNewGame || this.showJoin || this.changeUsername;
+    },
+  },
   created() {
     this.username = localStorage.getItem("name");
     if (!this.username) {
@@ -102,17 +113,28 @@ export default {
     join(room) {
       this.$socket.emit("join", room);
     },
+    start(word) {
+      console.log('starting with ' + word);
+      this.$socket.emit("newGame", {
+        room: this.currentRoom,
+        word,
+      });
+      this.showNewGame = false;
+    },
     setName(name) {
-      this.username = name;
-      localStorage.setItem("name", name);
-      this.$socket.emit("setName", name);
+      if (!name || name.length > 8) {
+        return;
+      }
+      this.username = name.substring(0, 8);
+      localStorage.setItem("name", this.username);
+      this.$socket.emit("setName", this.username);
       this.changeUsername = false;
     },
     leave(room) {
       this.$socket.emit("leave", room);
     },
-    newGame(room) {
-      this.$socket.emit("newGame", room);
+    newGame() {
+      this.showNewGame = true;
     },
     guess(word) {
       const payload = {

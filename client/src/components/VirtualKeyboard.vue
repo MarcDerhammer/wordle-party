@@ -61,9 +61,13 @@ export default {
   },
   props: {
     gameState: Object,
+    dialogOpen: Boolean,
   },
   created() {
     window.addEventListener("keydown", (e) => {
+      if (this.dialogOpen) {
+        return;
+      }
       if (e.key === "Enter") {
         this.$emit("key", "enter");
         return;
