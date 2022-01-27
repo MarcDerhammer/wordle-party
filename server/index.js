@@ -151,7 +151,7 @@ io.on("connection", (socket) => {
     }
 
     if (!fullValidWordList.includes(word.toLowerCase()) && word !== correctWord) {
-      console.log(`${socket.username || '[unknown]'} guessed "${word}" in ${channel}`);
+      console.log(`${word} is an invalid guess`);
       socket.emit("badGuess", word);
       return;
     }
