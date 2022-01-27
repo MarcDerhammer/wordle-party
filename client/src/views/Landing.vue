@@ -45,8 +45,11 @@
         justify="center"
       >
         <v-col cols="6" md="6">
+          <v-btn color="primary" @click="share" small style="margin-bottom: 8px"
+            >Share Code<v-icon right>mdi-share</v-icon></v-btn
+          >
           <v-btn color="error" @click="$emit('leave', currentRoom)" small
-            >Leave Room</v-btn
+            >Leave Room<v-icon right>mdi-logout</v-icon></v-btn
           >
         </v-col>
         <v-col
@@ -92,6 +95,17 @@ export default {
     MiniGuess,
   },
   methods: {
+    share() {
+      navigator
+        .share({
+          title: "Wordle Party",
+          text: 'Play Wordle live with me!',
+          url: "https://wordle-party.web.app/" + this.currentRoom,
+        })
+        .then(() => {
+          console.log("Thanks for sharing!");
+        });
+    },
     emitTyping() {
       this.$socket.emit("typing", {
         guessInput: this.guessInput,
