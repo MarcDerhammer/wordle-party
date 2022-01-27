@@ -5,7 +5,9 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import VueSocketIO from "vue-socket.io";
 import SocketIO from "socket.io-client";
-const socketConnection = SocketIO("http://localhost:3000");
+const socketConnection = process.env.NODE_ENV === "development" ?
+  SocketIO("http://localhost:32392") :
+  SocketIO("https://wordle.marcapi.com");
 
 Vue.config.productionTip = false;
 

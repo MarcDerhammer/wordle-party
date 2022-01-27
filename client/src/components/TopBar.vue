@@ -1,15 +1,15 @@
 <template>
-  <v-app-bar app color="primary" dark>
-    <h2 style="line-height: 1.3rem">
+  <v-app-bar dense app color="primary" dark>
+    <h3 style="line-height: 1.3rem">
       Wordle Party
       <h4
         v-if="currentRoom && $vuetify.breakpoint.xs"
-        style="display: block; font-size: 0.9rem"
+        style="display: block; font-size: 0.7rem"
       >
         Code:
-        <code style="font-size: 1.2rem">{{ currentRoom }}</code>
+        <code style="font-size: 0.8rem">{{ currentRoom }}</code>
       </h4>
-    </h2>
+    </h3>
     <v-spacer />
     <h2
       v-if="currentRoom && $vuetify.breakpoint.smAndUp"

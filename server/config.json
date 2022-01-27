@@ -1,6 +1,7 @@
 {
     "origins": [
-        "http://localhost:8080"
+        "http://localhost:8080",
+        "https://wordle-party.web.app"
     ],
     "port": 32392
 }

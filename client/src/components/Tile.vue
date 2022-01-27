@@ -29,10 +29,13 @@ export default {
 <style scoped>
 .baseTile {
   border: solid 2px gray;
-  width: 62px;
-  height: 62px;
+  width: 52px;
+  height: 52px;
   font-size: 2.5rem;
   margin: 2px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
 }
 .wrong {
   background-color: rgb(75, 75, 75);

@@ -10,17 +10,12 @@
     </v-row>
     <div v-else>
       <v-row justify="center">
-        <v-col cols="6" md="6">
-          <v-btn @click="$emit('leave', currentRoom)" small>Leave Room</v-btn>
-        </v-col>
         <v-col
-          cols="6"
-          md="6"
-          v-if="gameState && (gameState.won || gameState.lost)"
+          style="margin-top: 12px"
+          cols="12"
+          justify="center"
+          align="center"
         >
-          <v-btn @click="$emit('newGame', currentRoom)" small>New Game</v-btn>
-        </v-col>
-        <v-col cols="12" justify="center" align="center">
           <game :rows="gameState.rows" :guessInput="guessInput" />
         </v-col>
       </v-row>
@@ -41,6 +36,22 @@
       <div style="margin-top: 15px">
         <virtual-keyboard @key="handleVKeyboardPress" :gameState="gameState" />
       </div>
+      <v-row style="margin-top: 14px" justify="center" align="center">
+        <v-col cols="6" md="6">
+          <v-btn color="error" @click="$emit('leave', currentRoom)" small
+            >Leave Room</v-btn
+          >
+        </v-col>
+        <v-col
+          cols="6"
+          md="6"
+          v-if="gameState && (gameState.won || gameState.lost)"
+        >
+          <v-btn color="primary" @click="$emit('newGame', currentRoom)" small
+            >New Game</v-btn
+          >
+        </v-col>
+      </v-row>
     </div>
     <v-snackbar top v-model="snackbar">
       {{ text }}
