@@ -76,7 +76,7 @@ app.get("/ping", (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Listening on ${PORT}`);
+  console.log(`Worlde server has started and is listening on ${PORT}`);
 });
 
 io.on("connection", (socket) => {
@@ -114,8 +114,8 @@ io.on("connection", (socket) => {
     console.log(socket.username + " name set");
   });
   socket.on("newGame", (payload) => {
-    console.log("New game called by " + socket.username || '[Unknown]');
     const roomName = payload.room;
+    console.log("New game called by " + socket.username || '[Unknown]' + ' in ' + roomName);
     const existingRoom = rooms.find((x) => x.name === roomName);
     if (!existingRoom || !existingRoom.done) {
       console.log("Game is not over yet...");
@@ -199,7 +199,7 @@ io.on("connection", (socket) => {
       }
     });
 
-    room.state.push({ tiles: newRow, author: socket.username });
+    room.state.push({ tiles: newRow, author: socket.username, timestamp: new Date().getTime() });
 
     if (correctWord === word) {
       room.won = true;
