@@ -60,13 +60,7 @@
           <v-btn color="primary" @click="$emit('newGame', currentRoom)" small
             >New Game</v-btn
           >
-        </v-col>
-        <v-col
-          cols="6"
-          md="6"
-          v-if="gameState && gameState.lost && gameState.answerWas"
-        >
-          <span>It was {{gameState.answerWas}}</span>
+          <h4 v-if="gameState.answerWas && gameState.lost">It was {{gameState.answerWas}}</h4>
         </v-col>
         <v-col cols="6" md="6" v-else>
           <mini-guess
