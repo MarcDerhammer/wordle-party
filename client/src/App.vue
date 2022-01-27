@@ -49,6 +49,7 @@
             @keyup.enter="join(roomCode)"
             v-model="roomCode"
             counter="4"
+            @input="roomCode = roomCode.toUpperCase()"
           >
           </v-text-field>
         </v-card-text>
