@@ -108,7 +108,7 @@ export default {
       this.$socket.emit("create", "somedata");
     },
     join(room) {
-      this.$socket.emit("join", room);
+      this.$socket.emit("join", room.toUpperCase());
     },
     start(word) {
       console.log("starting with " + word);
