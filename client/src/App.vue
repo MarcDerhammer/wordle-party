@@ -128,6 +128,9 @@ export default {
       if (this.username) {
         this.setName(this.username);
       }
+      if (this.$route.params.id) {
+        this.join(this.$route.params.id);
+      }
     },
     roomCreated: function (room) {
       this.join(room);
