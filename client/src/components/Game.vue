@@ -26,7 +26,7 @@ export default {
   data: () => ({}),
   props: {
     rows: Array,
-    guessInput: String
+    guessInput: String,
   },
   computed: {
     firstEmptyIndex() {

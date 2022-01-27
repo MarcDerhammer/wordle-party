@@ -49,7 +49,7 @@ export default {
           }
         }
         this.$emit("start", this.randomWord ? "" : this.newWord);
-        this.newWord = '';
+        this.newWord = "";
       }
     },
   },

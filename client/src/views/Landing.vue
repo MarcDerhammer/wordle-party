@@ -100,14 +100,14 @@ export default {
       if (!navigator.share) {
         navigator.clipboard.writeText(url);
         this.snackbar = true;
-        this.text = 'Copied to clipboard!';
+        this.text = "Copied to clipboard!";
         return;
       }
       navigator
         .share({
           title: "Wordle Party",
-          text: 'Play Wordle live with me!',
-          url
+          text: "Play Wordle live with me!",
+          url,
         })
         .then(() => {
           console.log("Thanks for sharing!");
