@@ -151,6 +151,7 @@ io.on("connection", (socket) => {
     }
 
     if (!fullValidWordList.includes(word.toLowerCase()) && word !== correctWord) {
+      console.log(`${socket.username || '[unknown]'} guessed "${word}" in ${channel}`);
       socket.emit("badGuess", word);
       return;
     }
@@ -203,11 +204,13 @@ io.on("connection", (socket) => {
     if (correctWord === word) {
       room.won = true;
       room.done = true;
+      console.log(`${channel} won their game!`);
       io.to(channel).emit("win", room.state.length);
     } else if (room.state.length === 6) {
       room.lost = true;
       room.done = true;
       room.answerWas = correctWord;
+      console.log(`${channel} lost their game! (${correctWord})`);
       io.to(channel).emit("lose", correctWord);
     }
     emitGameState(channel);
