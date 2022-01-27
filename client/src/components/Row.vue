@@ -10,7 +10,6 @@
   </div>
 </template>
 
-
 <script>
 import Tile from "./Tile.vue";
 export default {

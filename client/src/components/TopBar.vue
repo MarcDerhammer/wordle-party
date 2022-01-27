@@ -28,13 +28,10 @@
 <script>
 export default {
   name: "TopBar",
-  data: () => ({
-    
-  }),
+  data: () => ({}),
   props: {
-      currentRoom: String,
-      username: String
-  }
+    currentRoom: String,
+    username: String,
+  },
 };
 </script>
-

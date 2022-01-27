@@ -11,7 +11,6 @@
   </div>
 </template>
 
-
 <script>
 import Row from "./Row.vue";
 export default {

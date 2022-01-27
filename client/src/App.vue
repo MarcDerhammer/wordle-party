@@ -12,6 +12,7 @@
         @join="showJoin = true"
         @leave="leave"
         @guess="guess"
+        @newGame="newGame"
         :gameState="gameState"
       />
     </v-main>
@@ -77,7 +78,7 @@ export default {
     currentRoom: null,
     roomCode: null,
     showJoin: false,
-    gameState: [],
+    gameState: {},
   }),
   created() {
     this.username = localStorage.getItem("name");
@@ -99,7 +100,6 @@ export default {
       this.$socket.emit("create", "somedata");
     },
     join(room) {
-      console.log("tryin to join");
       this.$socket.emit("join", room);
     },
     setName(name) {
@@ -109,8 +109,10 @@ export default {
       this.changeUsername = false;
     },
     leave(room) {
-      console.log("Trying to leave " + room);
       this.$socket.emit("leave", room);
+    },
+    newGame(room) {
+      this.$socket.emit("newGame", room);
     },
     guess(word) {
       const payload = {
@@ -142,7 +144,6 @@ export default {
     },
     gameState: function (state) {
       this.gameState = state;
-      console.log(this.gameState);
     },
   },
 };

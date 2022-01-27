@@ -24,6 +24,22 @@ const saveRoomsState = () => {
     fs.writeFileSync('./rooms.json', JSON.stringify(rooms));
 }
 
+const emitGameState = (roomName) => {
+    const room = rooms.find(x => x.name === roomName);
+    if (!room) {
+        console.log(room + ' not found?!');
+        return;
+    }
+    const payload = {
+        rows: fillGameState(room.state),
+        state: room.state,
+        won: room.won,
+        lost: room.lost
+    };
+
+    io.to(roomName).emit('gameState', payload);
+}
+
 const fillGameState = (existingState) => {
     const state = JSON.parse(JSON.stringify(existingState));
     for (let i = state.length; i < 6; i++) {
@@ -77,7 +93,7 @@ io.on('connection', (socket) => {
             word: getRandomWord()
         });
         socket.emit('roomCreated', roomName);
-        socket.emit('gameState', fillGameState(rooms.find(x => x.name === roomName).state));
+        emitGameState(roomName);
         saveRoomsState();
     });
     socket.on('join', (data) => {
@@ -85,7 +101,7 @@ io.on('connection', (socket) => {
         if (rooms.find(x => x.name === data)) {
             socket.join(data);
             socket.emit('roomJoined', data);
-            socket.emit('gameState', fillGameState(rooms.find(x => x.name === data).state));
+            emitGameState(data);
             return;
         }
         socket.emit('error', 'Room not found!');
@@ -99,14 +115,21 @@ io.on('connection', (socket) => {
         socket.username = data;
         console.log(socket.username + ' name set');
     });
-    socket.on('newGame', (room) => {
-        rooms = rooms.filter(x => x.name != room);
+    socket.on('newGame', (roomName) => {
+        console.log('New game called');
+        const existingRoom = rooms.find(x=>x.name === roomName);
+        if (!existingRoom || !existingRoom.done) {
+            console.log('Game is not over yet...');
+            return;
+        }
+
+        rooms = rooms.filter(x => x.name != roomName);
         rooms.push({
-            name: room,
+            name: roomName,
             state: [],
             word: getRandomWord()
         });
-        io.to(channel).emit('gameState', fillGameState(room.state));
+        emitGameState(roomName);
         saveRoomsState();
     });
     socket.on('guess', (data) => {
@@ -169,12 +192,14 @@ io.on('connection', (socket) => {
 
         if (correctWord === word) {
             room.won = true;
+            room.done = true;
             io.to(channel).emit('win', room.state.length);
         } else if (room.state.length === 6) {
             room.lost = true;
+            room.done = true;
             io.to(channel).emit('lose', correctWord);
         }
-        io.to(channel).emit('gameState', fillGameState(room.state));
+        emitGameState(channel);
         saveRoomsState();
     });
 });

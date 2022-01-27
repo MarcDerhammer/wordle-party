@@ -9,15 +9,19 @@
       </v-col>
     </v-row>
     <div v-else>
-      <v-row>
-        <v-col cols="12" md="6">
+      <v-row justify="center">
+        <v-col cols="6" md="6">
           <v-btn @click="$emit('leave', currentRoom)" small>Leave Room</v-btn>
         </v-col>
-        <v-col cols="12" md="6" v-if="gameState && (gameState.won || gameState.lost)">
-          <v-btn @click="$emit('restart', currentRoom)" small>New Game</v-btn>
+        <v-col
+          cols="6"
+          md="6"
+          v-if="gameState && (gameState.won || gameState.lost)"
+        >
+          <v-btn @click="$emit('newGame', currentRoom)" small>New Game</v-btn>
         </v-col>
-        <v-col justify="center" align="center">
-          <game :rows="gameState" />
+        <v-col cols="12" justify="center" align="center">
+          <game :rows="gameState.rows" />
         </v-col>
       </v-row>
       <v-row align="center">
@@ -35,7 +39,7 @@
         </v-col>
       </v-row>
     </div>
-    <v-snackbar v-model="snackbar">
+    <v-snackbar top v-model="snackbar">
       {{ text }}
       <template v-slot:action="{ attrs }">
         <v-btn color="pink" text v-bind="attrs" @click="snackbar = false">
@@ -84,41 +88,40 @@ export default {
   }),
   props: {
     currentRoom: String,
-    gameState: Array,
+    gameState: Object,
   },
   sockets: {
     badGuess: function (word) {
       this.snackbar = true;
-      this.text = `"${word}" is not in the valid word list!`
+      this.text = `"${word}" is not in the valid word list!`;
     },
-    win: function(count) {
+    win: function (count) {
       this.snackbar = true;
-      switch(count) {
+      switch (count) {
         case 1:
-          this.text = 'NO FUCKING WAY';
+          this.text = "NO FUCKING WAY";
           break;
         case 2:
-          this.text = 'Amazing';
+          this.text = "Amazing";
           break;
         case 3:
-          this.text = 'Wicked!'
+          this.text = "Wicked!";
           break;
         case 4:
-          this.text = 'Nice job';
+          this.text = "Nice job";
           break;
-        case 5: 
-          this.text = 'You did it!';
+        case 5:
+          this.text = "You did it!";
           break;
         case 6:
-          this.text = 'Nice, that was close!';
+          this.text = "Nice, that was close!";
           break;
       }
     },
-    lose: function(word) {
+    lose: function (word) {
       this.snackbar = true;
-      this.text = `Aw you suck, the word was "${word}"`
-    }
+      this.text = `Aw you suck, the word was "${word}"`;
+    },
   },
 };
 </script>
-
