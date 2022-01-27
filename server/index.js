@@ -95,7 +95,7 @@ io.on("connection", (socket) => {
     saveRoomsState();
   });
   socket.on("join", (data) => {
-    console.log(socket.username || '[unknown]' + " is attempting to join " + data);
+    console.log(`${socket.username || '[unknown]'} is attempting to join ${data}`);
     if (rooms.find((x) => x.name === data)) {
       socket.join(data);
       socket.emit("roomJoined", data);
@@ -143,6 +143,7 @@ io.on("connection", (socket) => {
   socket.on("guess", (data) => {
     const word = data.word.toUpperCase().trim().substring(0, 5);
     const channel = data.room;
+    console.log(`${socket.username || '[unknown]'} guessed "${word}" in ${channel}`);
     const room = rooms.find((x) => x.name === data.room);
     const correctWord = room.word;
     if (room.won || room.lost) {
