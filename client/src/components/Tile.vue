@@ -53,6 +53,8 @@ export default {
   align-items: center;
   display: flex;
   margin-bottom: 28px;
+  font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+  font-weight: bold;
 }
 .baseTileMini {
   border: solid 1px gray;
@@ -65,12 +67,15 @@ export default {
   display: flex;
 }
 .wrong {
-  background-color: rgb(75, 75, 75);
+  background-color: #3a3a3c;
+  border: unset !important;
 }
 .partial {
-  background-color: rgb(134, 113, 45);
+  background-color: #b59f3b;
+  border: unset !important;
 }
 .correct {
-  background-color: rgb(34, 87, 23);
+  background-color: #538d4e;
+  border: unset !important;
 }
 </style>
