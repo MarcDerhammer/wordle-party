@@ -59,6 +59,24 @@ const fillGameState = (existingState) => {
 
 const PORT = config.port;
 
+
+const getUnusedRoomCode = () => {
+    let roomCode = getRoomCode(4);
+    while (!rooms.find(x=>x.name === roomCode)) {
+        roomCode = getRoomCode(4);
+    }
+    return roomCode;
+}
+
+const getRoomCode = (length) => {
+    const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result = '';
+    for (let i = 0; i < length; i++ ) {
+        result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+    }
+    return result;
+}
+
 function getRandomWord() {
   return words[Math.round(Math.random() * (words.length - 1))].toUpperCase();
 }
@@ -76,14 +94,14 @@ app.get("/ping", (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Worlde server has started and is listening on ${PORT}`);
+  console.log(`Wordle server has started and is listening on ${PORT}`);
 });
 
 io.on("connection", (socket) => {
   console.log("A user has connected!");
   socket.on("create", (data) => {
     console.log("Create called with: " + data);
-    const roomName = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const roomName = getUnusedRoomCode();
     rooms = rooms.filter((x) => x.name != roomName);
     rooms.push({
       name: roomName,
