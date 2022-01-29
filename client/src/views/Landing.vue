@@ -48,7 +48,7 @@
           :gameState="gameState"
         />
       </div>
-      <v-row style="max-width: 500px; margin: auto" justify="center">
+      <v-row no-gutters style="max-width: 500px; margin: auto" justify="center">
         <v-col cols="12">
           <mini-guess
             v-for="(guess, index) in liveGuesses.filter(

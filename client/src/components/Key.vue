@@ -88,7 +88,7 @@ export default {
   border-radius: 4px;
   margin: 2px;
   flex: auto;
-  height: 55px;
+  height: 50px;
   justify-content: center;
   align-items: center;
   display: flex;
@@ -108,6 +108,6 @@ export default {
 }
 .side {
   width: 13px;
-  font-size: 0.7rem !important;
+  font-size: 0.6rem !important;
 }
 </style>

@@ -22,7 +22,7 @@ export default {
         this.screen.height - (keyboardHeight + headerHeight);
       const availableWidth = this.screen.width;
       const min = Math.min(availableHeight, availableWidth);
-      return min / 8;
+      return min / 9;
     },
     fontSize() {
       return this.size * 0.7 + "px";

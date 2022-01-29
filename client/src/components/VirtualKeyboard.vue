@@ -4,7 +4,7 @@
       max-width: 500px;
       touch-action: manipulation;
       position: fixed;
-      bottom: 30px;
+      bottom: 27px;
       margin: 0 auto;
       left: 0;
       right: 0;
