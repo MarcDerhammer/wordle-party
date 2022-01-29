@@ -49,7 +49,7 @@
         />
       </div>
       <v-row style="max-width: 500px; margin: auto" justify="center">
-        <v-col cols="6">
+        <v-col cols="12">
           <mini-guess
             v-for="(guess, index) in liveGuesses.filter(
               (x) => now - 5000 < x.timestamp
@@ -165,6 +165,9 @@ export default {
       if (this.$socket.id !== data.id && data.guessInput) {
         this.liveGuesses.unshift(data);
       }
+      this.liveGuesses = this.liveGuesses.sort((a, b) => {
+        return b.lastChange - a.lastChange;
+      })
     },
     badGuess: function (word) {
       this.snackbar = true;
