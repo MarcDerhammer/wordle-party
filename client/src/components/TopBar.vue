@@ -20,9 +20,7 @@
     </h2>
     <v-spacer />
     <h3>{{ username }}</h3>
-    <v-icon @click="$emit('changeUsername')" style="margin-left: 5px"
-      >mdi-pencil</v-icon
-    >
+    <v-icon @click="$emit('menu')" style="margin-left: 5px">mdi-menu</v-icon>
   </v-app-bar>
 </template>
 <script>

@@ -3,7 +3,7 @@
     <top-bar
       :currentRoom="currentRoom"
       :username="username"
-      @changeUsername="changeUsername = true"
+      @menu="menu = true"
     />
     <v-main>
       <router-view
@@ -17,13 +17,55 @@
         :dialogOpen="dialogOpen"
       />
     </v-main>
+    <v-dialog max-width="400" v-model="menu">
+      <v-card>
+        <v-card-title>Options<v-spacer/><v-icon @click="menu=false">mdi-close</v-icon></v-card-title>
+        <v-card-text>
+          Your display name is <b>{{ username }}</b>
+        </v-card-text>
+        <v-card-text v-if="currentRoom">
+          You are connected to <b>{{ currentRoom }}</b>
+        </v-card-text>
+        <v-card-text v-else> You are not in a room! </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="primary" @click="changeUsername = true"
+            >Change Name
+            <v-icon>mdi-account</v-icon>
+          </v-btn>
+          <v-spacer />
+          <v-btn
+            :disabled="!currentRoom"
+            color="error"
+            @click="leave(currentRoom)"
+            >Leave Room<v-icon right>mdi-logout</v-icon></v-btn
+          >
+          <v-spacer />
+        </v-card-actions>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn class="primary" @click="refresh"
+            >reload
+            <v-icon>mdi-refresh</v-icon>
+          </v-btn>
+          <v-spacer />
+        </v-card-actions>
+        <v-card-text style="text-align: center">
+          <span>
+            <v-icon small>mdi-hamburger</v-icon>
+            v {{ version }}
+          </span>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-dialog max-width="400" v-model="changeUsername">
       <v-card>
-        <v-card-title>What should we call you?</v-card-title>
+        <v-card-title>Set your Name</v-card-title>
         <v-card-text>
           <v-text-field
             autofocus
             @keyup.enter="setName(tempUsername)"
+            label="Display Name"
             v-model="tempUsername"
           >
           </v-text-field>
@@ -86,8 +128,12 @@ export default {
     showJoin: false,
     gameState: {},
     showNewGame: false,
+    menu: false,
   }),
   computed: {
+    version() {
+      return this.$store.getters.appVersion;
+    },
     dialogOpen() {
       return this.showNewGame || this.showJoin || this.changeUsername;
     },
@@ -99,6 +145,9 @@ export default {
     }
   },
   methods: {
+    refresh() {
+      location.reload();
+    },
     getRandomIntInclusive(min, max) {
       min = Math.ceil(min);
       max = Math.floor(max);

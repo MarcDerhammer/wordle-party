@@ -36,7 +36,8 @@ const emitGameState = (roomName) => {
     state: room.state,
     won: room.won,
     lost: room.lost,
-    answerWas: room.answerWas
+    answerWas: room.answerWas,
+    done: room.done
   };
 
   io.to(roomName).emit("gameState", payload);

@@ -10,6 +10,7 @@
       right: 0;
       width: 100%;
     "
+    :style="gameState.done ? 'opacity: .1' : ''"
   >
     <v-row class="keyRow" align="center">
       <Key

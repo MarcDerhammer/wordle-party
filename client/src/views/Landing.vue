@@ -2,10 +2,10 @@
   <div style="margin-top: 20px; text-align: center">
     <v-row v-if="!currentRoom">
       <v-col cols="12" md="6">
-        <v-btn color='primary' @click="$emit('create')" x-large>New Game</v-btn>
+        <v-btn color="primary" @click="$emit('create')" x-large>New Game</v-btn>
       </v-col>
       <v-col cols="12" md="6">
-        <v-btn color='primary' @click="$emit('join')" x-large>Join Game</v-btn>
+        <v-btn color="primary" @click="$emit('join')" x-large>Join Game</v-btn>
       </v-col>
     </v-row>
     <div v-else>
@@ -40,29 +40,19 @@
           :gameState="gameState"
         />
       </div>
+      <div>
+        <GameOverCard
+          @newGame="$emit('newGame', currentRoom)"
+          @share="share"
+          v-if="gameState.done"
+          :gameState="gameState"
+        />
+      </div>
       <v-row
         style="max-width: 500px; margin: auto; margin-top: 14px"
         justify="center"
       >
         <v-col cols="6" md="6">
-          <v-btn color="primary" @click="share" small style="margin-bottom: 8px"
-            >Share Code<v-icon right>mdi-share</v-icon></v-btn
-          >
-          <v-btn color="error" @click="$emit('leave', currentRoom)" small
-            >Leave Room<v-icon right>mdi-logout</v-icon></v-btn
-          >
-        </v-col>
-        <v-col
-          cols="6"
-          md="6"
-          v-if="gameState && (gameState.won || gameState.lost)"
-        >
-          <v-btn color="primary" @click="$emit('newGame', currentRoom)" small
-            >New Game</v-btn
-          >
-          <h4 v-if="gameState.answerWas && gameState.lost">It was {{gameState.answerWas}}</h4>
-        </v-col>
-        <v-col cols="6" md="6" v-else>
           <mini-guess
             v-for="(guess, index) in liveGuesses"
             v-bind:key="index"
@@ -87,6 +77,7 @@
 import Game from "../components/Game.vue";
 import MiniGuess from "../components/MiniGuess.vue";
 import VirtualKeyboard from "../components/VirtualKeyboard.vue";
+import GameOverCard from "../components/GameOverCard.vue";
 
 export default {
   name: "TopBar",
@@ -94,6 +85,7 @@ export default {
     Game,
     VirtualKeyboard,
     MiniGuess,
+    GameOverCard,
   },
   methods: {
     share() {
@@ -107,7 +99,7 @@ export default {
       navigator
         .share({
           title: "Wordle Party",
-          text: "Play Wordle live with me!",
+          text: "Play Wordle with me!",
           url,
         })
         .then(() => {
