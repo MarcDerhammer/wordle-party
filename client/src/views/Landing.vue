@@ -129,7 +129,7 @@ export default {
         this.emitTyping();
         return;
       }
-      if (key === "enter") {
+      if (key.toLowerCase() === "enter") {
         this.guess();
         this.guessInput = "";
         this.emitTyping();

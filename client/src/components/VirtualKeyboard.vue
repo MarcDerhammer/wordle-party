@@ -1,51 +1,66 @@
 <template>
-  <div style="max-width: 500px; margin: auto; touch-action: manipulation">
+  <div
+    style="
+      height: 140px;
+      max-width: 500px;
+      touch-action: manipulation;
+      position: absolute;
+      bottom: 0px;
+      margin: 0 auto;
+      left: 0;
+      right: 0;
+      width: 100%;
+    "
+  >
     <v-row class="keyRow" align="center">
-      <div
-        @click="$emit('key', l)"
-        :class="getClass(l)"
+      <Key
+        @key="handleKeyPress"
+        :allGuesses="allGuesses"
         v-for="l in top"
         v-bind:key="l"
-      >
-        {{ l }}
-      </div>
+        :l="l"
+      />
     </v-row>
     <v-row class="keyRowMid">
-      <div
-        @click="$emit('key', l)"
-        class="key"
-        :class="getClass(l)"
+      <Key
+        @key="handleKeyPress"
+        :allGuesses="allGuesses"
         v-for="l in middle"
         v-bind:key="l"
-      >
-        {{ l }}
-      </div>
+        :l="l"
+      />
     </v-row>
     <v-row class="keyRow">
-      <div @click="$emit('key', 'enter')" class="key" style="max-width: 60px">
-        ENTER
-      </div>
-      <div
-        @click="$emit('key', l)"
-        class="key"
-        :class="getClass(l)"
+      <Key
+        @key="handleKeyPress"
+        :allGuesses="allGuesses"
+        :l="'ENTER'"
+        :side="true"
+      />
+      <Key
+        @key="handleKeyPress"
+        :allGuesses="allGuesses"
         v-for="l in bottom"
         v-bind:key="l"
-      >
-        {{ l }}
-      </div>
-      <div @click="$emit('key', 'backspace')" class="key">
-        <v-icon>mdi-backspace-outline</v-icon>
-      </div>
+        :l="l"
+      />
+      <Key
+        @key="handleKeyPress"
+        :allGuesses="allGuesses"
+        icon="mdi-backspace-outline"
+        :l="'backspace'"
+        :side="true"
+      />
     </v-row>
   </div>
 </template>
 
 <script>
 const availableLetters = "abcdefghijklmnopqrstuvwxyz";
+import Key from "./Key.vue";
 export default {
   name: "VirtualKeyboard",
-  components: {},
+  components: { Key },
   data: () => ({
     top: "QWERTYUIOP",
     middle: "ASDFGHJKL",
@@ -80,23 +95,18 @@ export default {
         this.$emit("key", e.key.toUpperCase());
       }
     });
+    window.touchEnd = function () {
+      setTimeout(() => {
+        document.querySelectorAll(".keySelected").forEach((el) => {
+          console.log(el);
+          el.classList.remove("keySelected");
+        });
+      }, 100);
+    };
   },
   methods: {
-    getClass(l) {
-      if (
-        this.allGuesses.find((x) => x.letter === l && x.status === "correct")
-      ) {
-        return "key green";
-      }
-      if (
-        this.allGuesses.find((x) => x.letter === l && x.status === "partial")
-      ) {
-        return "key yellow";
-      }
-      if (this.allGuesses.find((x) => x.letter === l && x.status === "wrong")) {
-        return "key black";
-      }
-      return "key";
+    handleKeyPress(l) {
+      this.$emit("key", l);
     },
   },
 };
@@ -111,26 +121,14 @@ export default {
   padding-left: 32px;
   padding-right: 32px;
 }
-.key {
-  cursor: pointer;
-  border-radius: 4px;
-  background-color: rgb(70, 70, 70) !important;
-  margin: 2px;
-  flex: auto;
-  height: 35px;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  touch-action: manipulation;
+.partial {
+  background-color: #b59f3b;
 }
-.yellow {
-  background-color: rgb(134, 113, 45) !important;
+.correct {
+  background-color: #538d4e;
 }
-.green {
-  background-color: rgb(34, 87, 23) !important;
-}
-.black {
-  background-color: black !important;
-  opacity: 0.2;
+.disabled {
+  background-color: black;
+  opacity: 0.3;
 }
 </style>

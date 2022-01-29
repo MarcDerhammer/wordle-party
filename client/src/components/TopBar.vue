@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar dense app color="primary" dark>
+  <v-app-bar style="height: 42px" dense app color="primary" dark>
     <h3 style="line-height: 1.3rem">
       Wordle Party
       <h4
