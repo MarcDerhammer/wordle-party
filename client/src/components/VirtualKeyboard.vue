@@ -1,11 +1,10 @@
 <template>
   <div
     style="
-      height: 140px;
       max-width: 500px;
       touch-action: manipulation;
       position: absolute;
-      bottom: 0px;
+      bottom: 20px;
       margin: 0 auto;
       left: 0;
       right: 0;
