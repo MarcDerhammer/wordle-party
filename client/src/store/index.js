@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    packageVersion: process.env.PACKAGE_VERSION || "0",
+    packageVersion: JSON.parse(unescape(process.env.PACKAGE_JSON || '%7Bversion%3A0%7D')).version,
   },
   mutations: {},
   actions: {},
@@ -13,6 +13,7 @@ export default new Vuex.Store({
   getters: {
     appVersion: (state) => {
       return state.packageVersion;
-    }
+    },
+    // the rest of your getters here
   },
 });
