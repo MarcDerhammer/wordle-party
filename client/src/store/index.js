@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    packageVersion: '0',
+    packageVersion: process.env.VUE_APP_VERSION || '0.0.0',
   },
   mutations: {},
   actions: {},
