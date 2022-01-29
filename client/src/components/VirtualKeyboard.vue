@@ -3,8 +3,8 @@
     style="
       max-width: 500px;
       touch-action: manipulation;
-      position: absolute;
-      bottom: 20px;
+      position: fixed;
+      bottom: 15px;
       margin: 0 auto;
       left: 0;
       right: 0;
