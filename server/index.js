@@ -63,7 +63,7 @@ const PORT = config.port;
 
 const getUnusedRoomCode = () => {
     let roomCode = getRoomCode(4);
-    while (!rooms.find(x=>x.name === roomCode)) {
+    while (rooms.find(x => x.name === roomCode)) {
         roomCode = getRoomCode(4);
     }
     return roomCode;
@@ -152,12 +152,18 @@ io.on("connection", (socket) => {
   });
   socket.on("typing", (data) => {
     const room = data.room;
+    if (data.guessInput !== socket.lastGuessInput) {
+        socket.lastChange = new Date().getTime();
+    }
+    socket.lastGuessInput = data.guessInput;
     const input = data.guessInput;
+    socket.lastGuessInput = data.guessInput;
     io.to(room).emit("liveGuess", {
         id: socket.id,
         name: socket.username || 'Someone',
         guessInput: input,
-        timestamp: new Date().getTime()
+        timestamp: new Date().getTime(),
+        lastChange: socket.lastChange || new Date().getTime()
     });
   });
   socket.on("guess", (data) => {
