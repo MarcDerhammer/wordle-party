@@ -1,13 +1,33 @@
 <template>
-  <div :class="getClass(status)">
+  <div
+    :style="
+      !mini ? `height: ${size}px; width: ${size}px; font-size: ${fontSize}` : ''
+    "
+    :class="getClass(status)"
+  >
     {{ letter }}
   </div>
 </template>
 
 <script>
+const keyboardHeight = 180;
+const headerHeight = 48;
+
 export default {
   name: "Tile",
   data: () => ({}),
+  computed: {
+    size() {
+      const availableHeight =
+        this.screen.height - (keyboardHeight + headerHeight);
+      const availableWidth = this.screen.width;
+      const min = Math.min(availableHeight, availableWidth);
+      return min / 8;
+    },
+    fontSize() {
+      return this.size * 0.7 + "px";
+    },
+  },
   methods: {
     getClass(status) {
       let cl = "baseTile";
@@ -41,16 +61,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    screen: Object,
   },
 };
 </script>
 
 <style scoped>
 .baseTile {
-  width: 52px;
   border: solid 2px rgb(95, 95, 95);
-  height: 52px;
-  font-size: 2.5rem;
   margin: 2px;
   justify-content: center;
   align-items: center;
@@ -61,9 +79,9 @@ export default {
   opacity: 0.3;
 }
 .baseTileMini {
-  width: 15px;
+  width: 15px !important;
   border: solid 2px rgba(95, 95, 95, 0.3);
-  height: 15px;
+  height: 15px !important;
   font-size: 0.7rem;
   margin: 1px;
   justify-content: center;
@@ -83,12 +101,12 @@ export default {
 .partial {
   background-color: #b59f3b;
   border: unset !important;
-  animation: yellowShadow .5s;
+  animation: yellowShadow 0.5s;
 }
 .correct {
   background-color: #538d4e;
   border: unset !important;
-  animation: greenShadow .5s;
+  animation: greenShadow 0.5s;
 }
 @keyframes shake {
   0% {

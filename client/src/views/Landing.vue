@@ -33,7 +33,7 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <div style="margin-top: 15px">
+      <div>
         <virtual-keyboard
           :dialogOpen="dialogOpen"
           @key="handleVKeyboardPress"
@@ -49,10 +49,10 @@
         />
       </div>
       <v-row
-        style="max-width: 500px; margin: auto; margin-top: 14px"
+        style="max-width: 500px; margin: auto;"
         justify="center"
       >
-        <v-col cols="6" md="6">
+        <v-col cols="6">
           <mini-guess
             v-for="(guess, index) in liveGuesses"
             v-bind:key="index"
@@ -89,7 +89,7 @@ export default {
   },
   methods: {
     share() {
-      this.$emit('share')
+      this.$emit("share");
     },
     emitTyping() {
       this.$socket.emit("typing", {
