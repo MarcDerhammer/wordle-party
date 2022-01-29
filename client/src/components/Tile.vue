@@ -3,7 +3,7 @@
     :style="
       !mini ? `height: ${size}px; width: ${size}px; font-size: ${fontSize}` : ''
     "
-    :class="getClass(status)"
+    :class="large ? 'baseTileLarge' : getClass(status)"
   >
     {{ letter }}
   </div>
@@ -62,6 +62,7 @@ export default {
       default: false,
     },
     screen: Object,
+    large: Boolean
   },
 };
 </script>
@@ -83,6 +84,16 @@ export default {
   border: solid 2px rgba(95, 95, 95, 0.3);
   height: 15px !important;
   font-size: 0.7rem;
+  margin: 1px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+.baseTileLarge {
+  width: 28px !important;
+  border: solid 2px rgba(95, 95, 95, 0.3);
+  height: 28px !important;
+  font-size: 23px;
   margin: 1px;
   justify-content: center;
   align-items: center;

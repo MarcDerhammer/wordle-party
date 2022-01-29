@@ -16,7 +16,11 @@
           justify="center"
           align="center"
         >
-          <game :rows="gameState.rows" :guessInput="guessInput" />
+          <game
+            :screen="screen"
+            :rows="gameState.rows"
+            :guessInput="guessInput"
+          />
         </v-col>
       </v-row>
       <v-row v-if="false" align="center">
@@ -48,18 +52,60 @@
           :gameState="gameState"
         />
       </div>
-      <v-row no-gutters style="max-width: 500px; margin: auto" justify="center">
-        <v-col cols="12">
+      <v-row
+        v-if="width < 1000"
+        no-gutters
+        style="max-width: 500px; margin: auto"
+        justify="center"
+      >
+        <v-col cols="12"
+          v-for="(guess, index) in liveGuesses.filter(
+            (x) => now - 5000 < x.timestamp
+          )"
+          v-bind:key="index"
+          no-gutters
+        >
           <mini-guess
-            v-for="(guess, index) in liveGuesses.filter(
-              (x) => now - 5000 < x.timestamp
-            )"
-            v-bind:key="index"
             :name="guess.name"
             :guessInput="guess.guessInput"
+            :screen="screen"
           />
         </v-col>
       </v-row>
+      <div v-else>
+        <div
+          style="
+            position: fixed;
+            top: 90px;
+            margin-left: -125px;
+            text-align: right;
+            width: 600px;
+          "
+        >
+          <v-row
+            v-for="(guess, index) in liveGuesses
+              .filter((x) => now - 5000 < x.timestamp)
+              .sort((a, b) => {
+                return a.name - b.name;
+              })"
+            v-bind:key="index"
+            no-gutters
+          >
+            <v-col cols="12">
+              <mini-guess
+                :name="guess.name"
+                :guessInput="guess.guessInput"
+                large
+                :screen="screen"
+              />
+            </v-col>
+          </v-row>
+        </div>
+        <div style="position: fixed; top: 90px; right: 20px">
+          <h1>Join on your phone!</h1>
+          <h2>wordle-party.web.app/{{ currentRoom }}</h2>
+        </div>
+      </div>
     </div>
     <v-snackbar top v-model="snackbar">
       {{ text }}
@@ -85,6 +131,14 @@ export default {
     VirtualKeyboard,
     MiniGuess,
     GameOverCard,
+  },
+  computed: {
+    screen() {
+      return {
+        height: this.height,
+        width: this.width,
+      };
+    },
   },
   methods: {
     share() {
@@ -145,6 +199,8 @@ export default {
     text: "",
     liveGuesses: [],
     now: new Date().getTime(),
+    height: window.innerHeight,
+    width: window.innerWidth,
   }),
   props: {
     currentRoom: String,
@@ -158,16 +214,20 @@ export default {
         this.emitTyping();
       }
     }, 1000);
+    window.addEventListener("resize", () => {
+      this.height = window.innerHeight;
+      this.width = window.innerWidth;
+    });
   },
   sockets: {
     liveGuess: function (data) {
       this.liveGuesses = this.liveGuesses.filter((x) => x.id !== data.id);
-      if (this.$socket.id !== data.id && data.guessInput) {
+      if (this.$socket.id !== data.id) {
         this.liveGuesses.unshift(data);
       }
       this.liveGuesses = this.liveGuesses.sort((a, b) => {
         return b.lastChange - a.lastChange;
-      })
+      });
     },
     badGuess: function (word) {
       this.snackbar = true;

@@ -3,7 +3,12 @@
     <div v-if="showGuess">
       <v-row>
         <div v-for="(n, index) in 5" v-bind:key="index">
-          <Tile :mini="mini" :letter="guessInput[index]" :screen="screen" />
+          <Tile
+            :large="large"
+            :mini="mini"
+            :letter="guessInput[index]"
+            :screen="screen"
+          />
         </div>
       </v-row>
     </div>
@@ -17,6 +22,7 @@
                 :letter="gameTile.letter"
                 :status="gameTile.status"
                 :screen="screen"
+                :large="large"
               />
             </div>
           </v-row>
@@ -48,6 +54,7 @@ export default {
       default: false,
     },
     screen: Object,
+    large: Boolean,
   },
 };
 </script>
