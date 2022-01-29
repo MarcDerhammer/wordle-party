@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    packageVersion: JSON.parse(unescape(process.env.PACKAGE_JSON || '%7Bversion%3A0%7D')).version,
+    packageVersion: '0',
   },
   mutations: {},
   actions: {},
