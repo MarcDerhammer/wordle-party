@@ -107,7 +107,7 @@ export default {
   color: black;
 }
 .side {
-  width: 45px;
+  width: 13px;
   font-size: 0.7rem !important;
 }
 </style>
