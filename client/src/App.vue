@@ -15,11 +15,16 @@
         @newGame="newGame"
         :gameState="gameState"
         :dialogOpen="dialogOpen"
+        @share="share"
       />
     </v-main>
     <v-dialog max-width="400" v-model="menu">
       <v-card>
-        <v-card-title>Options<v-spacer/><v-icon @click="menu=false">mdi-close</v-icon></v-card-title>
+        <v-card-title
+          >Options<v-spacer /><v-icon @click="menu = false"
+            >mdi-close</v-icon
+          ></v-card-title
+        >
         <v-card-text>
           Your display name is <b>{{ username }}</b>
         </v-card-text>
@@ -30,7 +35,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" @click="changeUsername = true"
-            >Change Name
+            >Set Name
             <v-icon>mdi-account</v-icon>
           </v-btn>
           <v-spacer />
@@ -44,7 +49,11 @@
         </v-card-actions>
         <v-card-actions>
           <v-spacer />
-          <v-btn class="primary" @click="refresh"
+          <v-btn :disabled="!currentRoom" color="primary" @click="share"
+            >Invite Friends<v-icon right>mdi-share</v-icon></v-btn
+          >
+          <v-spacer />
+          <v-btn @click="refresh"
             >reload
             <v-icon>mdi-refresh</v-icon>
           </v-btn>
@@ -145,6 +154,24 @@ export default {
     }
   },
   methods: {
+    share() {
+      const url = "https://wordle-party.web.app/" + this.currentRoom;
+      if (!navigator.share) {
+        navigator.clipboard.writeText(url);
+        this.snackbar = true;
+        this.text = "Copied to clipboard!";
+        return;
+      }
+      navigator
+        .share({
+          title: "Wordle Party",
+          text: "Play Wordle with me!",
+          url,
+        })
+        .then(() => {
+          console.log("Thanks for sharing!");
+        });
+    },
     refresh() {
       location.reload();
     },

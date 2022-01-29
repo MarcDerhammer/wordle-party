@@ -88,12 +88,12 @@ export default {
   border-radius: 4px;
   margin: 2px;
   flex: auto;
-  height: 45px;
+  height: 55px;
   justify-content: center;
   align-items: center;
   display: flex;
   touch-action: manipulation;
-  width: 30px;
+  width: 5px;
   font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
   font-weight: bold;
   font-size: 1.5rem;

@@ -89,22 +89,7 @@ export default {
   },
   methods: {
     share() {
-      const url = "https://wordle-party.web.app/" + this.currentRoom;
-      if (!navigator.share) {
-        navigator.clipboard.writeText(url);
-        this.snackbar = true;
-        this.text = "Copied to clipboard!";
-        return;
-      }
-      navigator
-        .share({
-          title: "Wordle Party",
-          text: "Play Wordle with me!",
-          url,
-        })
-        .then(() => {
-          console.log("Thanks for sharing!");
-        });
+      this.$emit('share')
     },
     emitTyping() {
       this.$socket.emit("typing", {
