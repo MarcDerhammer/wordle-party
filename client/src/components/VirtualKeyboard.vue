@@ -103,6 +103,17 @@ export default {
         });
       }, 100);
     };
+    window.touchStart = function (e) {
+      if (e.target.classList.contains("key")) {
+        e.target.classList.add("keySelected");
+      }
+      if (e.target.parentElement.classList.contains("key")) {
+        e.target.parentElement.classList.add("keySelected");
+      }
+      if (e.target.parentElement.parentElement.classList.contains("key")) {
+        e.target.parentElement.parentElement.classList.add("keySelected");
+      }
+    };
   },
   methods: {
     handleKeyPress(l) {

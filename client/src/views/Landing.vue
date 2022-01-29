@@ -10,32 +10,53 @@
     </v-row>
     <div v-else>
       <v-row justify="center">
-        <v-col
-          style="margin-top: 12px"
-          cols="12"
-          justify="center"
-          align="center"
+        <div
+          :style="`max-height: ${availableHeight}px; aspect-ratio: ${cols} / ${rows}`"
+          style="
+            max-width: 800px;
+            position: fixed;
+            bottom: 180px;
+            margin: 0 auto;
+            width: 100%;
+            border: solid red 1px;
+            display: flex;
+            flex-wrap: wrap;
+          "
         >
-          <game
-            :screen="screen"
-            :rows="gameState.rows"
-            :guessInput="guessInput"
-          />
-        </v-col>
-      </v-row>
-      <v-row v-if="false" align="center">
-        <v-col justify="center">
-          <v-text-field
-            clearable
-            style="max-width: 420px; margin: auto"
-            placeholder="Enter your guess here"
-            append-outer-icon="mdi-send"
-            @click:append-outer="guess"
-            v-model="guessInput"
-            @keyup.enter="guess"
-            @input="checkInput"
-          ></v-text-field>
-        </v-col>
+          <div
+            v-for="n in rows"
+            v-bind:key="n"
+            style="
+              border: solid 1px blue;
+              flex: 0 1 100%;
+              display: flex;
+            "
+          >
+            <div
+              v-for="n in cols"
+              v-bind:key="n"
+              style="flex: 1; border: solid 1px green"
+            >
+              A
+            </div>
+          </div>
+        </div>
+        <game
+          v-if="false"
+          :screen="screen"
+          :rows="gameState.rows"
+          :guessInput="guessInput"
+          style="
+            max-width: 500px;
+            touch-action: manipulation;
+            position: fixed;
+            bottom: 180px;
+            margin: 0 auto;
+            left: 0;
+            right: 0;
+            width: 100%;
+          "
+        />
       </v-row>
       <div>
         <virtual-keyboard
@@ -136,6 +157,20 @@ export default {
     GameOverCard,
   },
   computed: {
+    rows() {
+      // todo.. in case we ever change guess count or word length
+      return 6; // this.gameState.rows.length;
+    },
+    cols() {
+      // todo: see above
+      return 5; // this.gameState.rows[0].tiles.length;
+    },
+    availableWidth() {
+      return Math.min(this.screen.width, 500);
+    },
+    availableHeight() {
+      return this.screen.height - (48 + 189);
+    },
     screen() {
       return {
         height: this.height,

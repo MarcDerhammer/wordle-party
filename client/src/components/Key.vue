@@ -5,6 +5,7 @@
     @mousedown="mouseDown"
     @mouseup="mouseOut"
     ontouchend="touchEnd(event)"
+    ontouchstart="touchStart(event)"
   >
     <div v-if="icon">
       <v-icon>{{ icon }}</v-icon>
@@ -30,7 +31,6 @@ export default {
     mouseDown(e) {
       if (e.target.classList.contains("key")) {
         e.target.classList.add("keySelected");
-        console.log(e.target.classList);
       }
       if (e.target.parentElement.classList.contains("key")) {
         e.target.parentElement.classList.add("keySelected");

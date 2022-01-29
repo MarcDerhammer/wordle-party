@@ -1,8 +1,7 @@
 <template>
   <div>
-    <v-row
-      align="center"
-      justify="center"
+    <div
+      no-gutters
       v-for="(row, index) in rows"
       v-bind:key="index"
     >
@@ -13,7 +12,7 @@
         :author="row.author"
         :screen="screen"
       />
-    </v-row>
+    </div>
   </div>
 </template>
 
@@ -24,22 +23,17 @@ export default {
   components: {
     Row,
   },
-  data: () => ({
-    
-  }),
+  data: () => ({}),
   props: {
     rows: Array,
     guessInput: String,
-    screen: Object
+    screen: Object,
   },
   computed: {
     firstEmptyIndex() {
       return this.rows.findIndex((x) => x.tiles.find((y) => !y.status));
     },
-    
   },
-  created() {
-    
-  }
+  created() {},
 };
 </script>
