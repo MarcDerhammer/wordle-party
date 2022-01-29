@@ -58,7 +58,8 @@
         style="max-width: 500px; margin: auto"
         justify="center"
       >
-        <v-col cols="12"
+        <v-col
+          cols="12"
           v-for="(guess, index) in liveGuesses.filter(
             (x) => now - 5000 < x.timestamp
           )"
@@ -86,7 +87,9 @@
             v-for="(guess, index) in liveGuesses
               .filter((x) => now - 5000 < x.timestamp)
               .sort((a, b) => {
-                return a.name - b.name;
+                var textA = a.name.toUpperCase();
+                var textB = b.name.toUpperCase();
+                return textA < textB ? -1 : textA > textB ? 1 : 0;
               })"
             v-bind:key="index"
             no-gutters
