@@ -156,7 +156,8 @@ io.on("connection", (socket) => {
     io.to(room).emit("liveGuess", {
         id: socket.id,
         name: socket.username || 'Someone',
-        guessInput: input
+        guessInput: input,
+        timestamp: new Date().getTime()
     });
   });
   socket.on("guess", (data) => {

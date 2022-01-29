@@ -48,13 +48,12 @@
           :gameState="gameState"
         />
       </div>
-      <v-row
-        style="max-width: 500px; margin: auto;"
-        justify="center"
-      >
+      <v-row style="max-width: 500px; margin: auto" justify="center">
         <v-col cols="6">
           <mini-guess
-            v-for="(guess, index) in liveGuesses"
+            v-for="(guess, index) in liveGuesses.filter(
+              (x) => now - 5000 < x.timestamp
+            )"
             v-bind:key="index"
             :name="guess.name"
             :guessInput="guess.guessInput"
@@ -145,11 +144,20 @@ export default {
     snackbar: false,
     text: "",
     liveGuesses: [],
+    now: new Date().getTime(),
   }),
   props: {
     currentRoom: String,
     gameState: Object,
     dialogOpen: Boolean,
+  },
+  created() {
+    setInterval(() => {
+      this.now = new Date().getTime();
+      if (this.guessInput) {
+        this.emitTyping();
+      }
+    }, 1000);
   },
   sockets: {
     liveGuess: function (data) {
