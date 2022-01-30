@@ -60,8 +60,8 @@ export default {
   watch: {
     // prettier-ignore
     screen: function(val) {
-      const min = Math.min(val.width, val.height - (48+189));
-      this.size = min / 10;
+      const min = Math.min(val.width, val.height - (48 + 189));
+      this.size = min / 12;
     },
   },
 };
@@ -114,12 +114,15 @@ export default {
 .partial {
   background-color: #b59f3b;
   border: unset !important;
-  animation: yellowShadow 0.5s;
+  animation: yellowShadow .7s;
+  z-index: 998;
 }
 .correct {
   background-color: #538d4e;
   border: unset !important;
-  animation: greenShadow 0.5s;
+  animation: greenShadow .8s;
+  z-index: 999;
+
 }
 @keyframes shake {
   0% {
@@ -158,12 +161,12 @@ export default {
 }
 @keyframes greenShadow {
   0% {
-    box-shadow: 0 0 0 8px #538d4e;
+    box-shadow: 0 0 0 18px #538d4e;
   }
 }
 @keyframes yellowShadow {
   0% {
-    box-shadow: 0 0 0 4px #b59f3b;
+    box-shadow: 0 0 0 12px #b59f3b;
   }
 }
 </style>

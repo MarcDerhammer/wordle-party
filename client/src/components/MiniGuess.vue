@@ -5,12 +5,8 @@
         cols="6"
         style="text-align: right; padding-right: 32px; white-space: nowrap"
       >
-      <h3 v-if="large">
-        {{ name }}:
-      </h3>
-      <div v-else>
-        {{ name }}:
-      </div>
+        <h3 v-if="large">{{ name }}:</h3>
+        <div v-else>{{ name }}:</div>
       </v-col>
       <v-col cols="6">
         <row
@@ -36,7 +32,7 @@ export default {
   props: {
     guessInput: String,
     name: String,
-    large: Boolean
+    large: Boolean,
   },
 };
 </script>

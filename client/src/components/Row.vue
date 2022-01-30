@@ -4,7 +4,7 @@
       <div
         v-for="(tile, index) in tiles"
         v-bind:key="index"
-        style="flex: 1; padding: 2px"
+        style="flex: 1; padding: 3px"
       >
         <Tile
           :large="large"
@@ -18,7 +18,7 @@
       <div
         v-for="(tile, index) in tiles"
         v-bind:key="index"
-        style="flex: 1; padding: 2px"
+        style="flex: 1; padding: 3px"
       >
         <v-tooltip right color="primary">
           <template v-slot:activator="{ on, attrs }">

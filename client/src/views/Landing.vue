@@ -10,33 +10,6 @@
     </v-row>
     <div v-else>
       <Game :screen="screen" :rows="gameState.rows" :guessInput="guessInput" />
-      <div v-if="false"
-        :style="`max-height: ${availableHeight}px; aspect-ratio: ${cols} / ${rows}`"
-        style="
-          max-width: 800px;
-          position: fixed;
-          bottom: 180px;
-          margin: 0 auto;
-          width: 100%;
-          border: solid red 1px;
-          display: flex;
-          flex-wrap: wrap;
-        "
-      >
-        <div
-          v-for="n in rows"
-          v-bind:key="n"
-          style="border: solid 1px blue; flex: 0 1 100%; display: flex"
-        >
-          <div
-            v-for="n in cols"
-            v-bind:key="n"
-            style="flex: 1; border: solid 1px green"
-          >
-            A
-          </div>
-        </div>
-      </div>
       <div>
         <virtual-keyboard
           :dialogOpen="dialogOpen"
