@@ -24,6 +24,16 @@ if (fs.existsSync("./rooms.json")) {
 const saveRoomsState = () => {
   fs.writeFileSync("./rooms.json", JSON.stringify(rooms));
 };
+const sendRoomCount = (roomName) => {
+  if (!roomName) { 
+    return;
+  }
+  const room = io.sockets.adapter.rooms.get(roomName);
+  if (!room) {
+    return;
+  }
+  io.to(roomName).emit('roomCount', room.size || 0);
+}
 
 const emitGameState = (roomName) => {
   const room = rooms.find((x) => x.name === roomName);
@@ -119,8 +129,7 @@ io.on("connection", (socket) => {
       socket.join(data);
       socket.emit("roomJoined", data);
       emitGameState(data);
-      const count = io.sockets.adapter.rooms.get(data).size;
-      io.to(data).emit('roomCount', count);
+      sendRoomCount(data);
       return;
     }
     socket.emit("roomNotFound", "Room not found!");
@@ -129,8 +138,7 @@ io.on("connection", (socket) => {
     console.log(socket.username + " is leaving " + data);
     socket.leave(data);
     socket.emit("roomLeft", data);
-    const count = io.sockets.adapter.rooms.get(data).size;
-    io.to(data).emit('roomCount', count);
+    sendRoomCount(data);
   });
   socket.on("setName", (data) => {
     socket.username = data;
@@ -256,7 +264,13 @@ io.on("connection", (socket) => {
     saveRoomsState();
   });
   socket.on('roomCount', (data) => {
-    const count = io.sockets.adapter.rooms.get(data).size;
-    socket.emit('roomCount', count);
+    if (!data) {
+      return;
+    }
+    const room = io.sockets.adapter.rooms.get(data);
+    if (!room) {
+      return;
+    }
+    socket.emit('roomCount', room.size || 0);
   })
 });

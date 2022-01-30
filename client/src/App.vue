@@ -269,12 +269,12 @@ export default {
       this.$socket.emit("roomCount", this.currentRoom);
     },
     roomCount: function(count) {
-      this.roomCount = count;
+      this.roomCount = count.toString();
     },
     roomLeft: function (room) {
       this.currentRoom = null;
       console.log("left room " + room);
-      localStorage.setItem("lastRoom", null);
+      localStorage.removeItem("lastRoom");
       clearInterval(this.fireworksInterval);
     },
     roomNotFound: function () {
