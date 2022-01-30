@@ -1,11 +1,14 @@
 <template>
   <div style="margin-top: 20px; text-align: center">
-    <v-row v-if="!currentRoom">
+    <v-row align="center" justify="center" style="max-width: 800px; margin: auto" v-if="!currentRoom">
       <v-col cols="12" md="6">
         <v-btn color="primary" @click="$emit('create')" x-large>New Game</v-btn>
       </v-col>
       <v-col cols="12" md="6">
         <v-btn color="primary" @click="$emit('join')" x-large>Join Game</v-btn>
+      </v-col>
+      <v-col cols="12">
+        <About />
       </v-col>
     </v-row>
     <div v-else>
@@ -65,6 +68,7 @@ import Game from "../components/Game.vue";
 import VirtualKeyboard from "../components/VirtualKeyboard.vue";
 import GameOverCard from "../components/GameOverCard.vue";
 import MiniGuess from "../components/MiniGuess.vue";
+import About from "../components/About.vue";
 
 export default {
   name: "TopBar",
@@ -73,6 +77,7 @@ export default {
     VirtualKeyboard,
     GameOverCard,
     MiniGuess,
+    About
   },
   computed: {
     rows() {

@@ -275,6 +275,7 @@ export default {
       this.currentRoom = null;
       console.log("left room " + room);
       localStorage.setItem("lastRoom", null);
+      clearInterval(this.fireworksInterval);
     },
     roomNotFound: function () {
       this.text = `Room not found!`;
