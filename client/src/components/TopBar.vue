@@ -8,6 +8,13 @@
       >
         Code:
         <code style="font-size: 0.8rem">{{ currentRoom }}</code>
+        <v-icon color="red" x-small v-if="!connected"
+          >mdi-cloud-off-outline</v-icon
+        >
+
+        <v-badge inline v-else color="#538d4e" :content="roomCount">
+          <v-icon small>mdi-account-group</v-icon>
+        </v-badge>
       </h4>
     </h3>
     <v-spacer />
@@ -17,6 +24,13 @@
     >
       Code:
       <code style="font-size: 1.8rem">{{ currentRoom }}</code>
+      <v-icon color="red" large v-if="!connected"
+          >mdi-cloud-off-outline</v-icon
+        >
+
+        <v-badge overlap v-else color="#538d4e" :content="roomCount">
+          <v-icon large>mdi-account-group</v-icon>
+        </v-badge>
     </h2>
     <v-spacer />
     <h3>{{ username }}</h3>
@@ -30,6 +44,8 @@ export default {
   props: {
     currentRoom: String,
     username: String,
+    connected: Boolean,
+    roomCount: String
   },
 };
 </script>

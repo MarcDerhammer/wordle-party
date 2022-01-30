@@ -4,6 +4,8 @@
       :currentRoom="currentRoom"
       :username="username"
       @menu="menu = true"
+      :connected="connected"
+      :roomCount="roomCount"
     />
     <v-main>
       <router-view
@@ -150,7 +152,9 @@ export default {
     menu: false,
     fireworksInterval: null,
     snackbar: false,
-    text: null
+    text: null,
+    connected: false,
+    roomCount: null
   }),
   computed: {
     version() {
@@ -165,6 +169,11 @@ export default {
     if (!this.username) {
       this.setName("Anon-" + Math.round(this.$randomInRange(0, 99)));
     }
+    setInterval(() => {
+      if (this.currentRoom) {
+        this.$socket.emit("roomCount", this.currentRoom);
+      }
+    }, 5000);
   },
   methods: {
     share() {
@@ -233,6 +242,7 @@ export default {
   },
   sockets: {
     connect: function () {
+      this.connected = true;
       console.log("connected!!");
       if (this.username) {
         this.setName(this.username);
@@ -246,6 +256,9 @@ export default {
         }
       }
     },
+    disconnect: function () {
+      this.connected = false;
+    },
     roomCreated: function (room) {
       this.join(room);
     },
@@ -253,6 +266,10 @@ export default {
       this.currentRoom = room;
       this.showJoin = false;
       localStorage.setItem("lastRoom", room);
+      this.$socket.emit("roomCount", this.currentRoom);
+    },
+    roomCount: function(count) {
+      this.roomCount = count;
     },
     roomLeft: function (room) {
       this.currentRoom = null;

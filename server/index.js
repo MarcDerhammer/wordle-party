@@ -119,6 +119,8 @@ io.on("connection", (socket) => {
       socket.join(data);
       socket.emit("roomJoined", data);
       emitGameState(data);
+      const count = io.sockets.adapter.rooms.get(data).size;
+      io.to(data).emit('roomCount', count);
       return;
     }
     socket.emit("roomNotFound", "Room not found!");
@@ -127,6 +129,8 @@ io.on("connection", (socket) => {
     console.log(socket.username + " is leaving " + data);
     socket.leave(data);
     socket.emit("roomLeft", data);
+    const count = io.sockets.adapter.rooms.get(data).size;
+    io.to(data).emit('roomCount', count);
   });
   socket.on("setName", (data) => {
     socket.username = data;
@@ -251,4 +255,8 @@ io.on("connection", (socket) => {
     emitGameState(channel);
     saveRoomsState();
   });
+  socket.on('roomCount', (data) => {
+    const count = io.sockets.adapter.rooms.get(data).size;
+    socket.emit('roomCount', count);
+  })
 });

@@ -174,7 +174,7 @@ export default {
       if (!this.liveGuesses.length) {
         this.showLive = false;
       }
-    }, 1000);
+    }, 3000);
     window.addEventListener("resize", () => {
       this.height = window.innerHeight;
       this.width = window.innerWidth;
