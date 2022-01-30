@@ -76,3 +76,4 @@ typings/
 .fusebox/
 server/rooms.json
 client/.firebase/hosting.ZGlzdA.cache
+server/history/*

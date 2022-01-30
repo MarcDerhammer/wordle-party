@@ -119,6 +119,7 @@ io.on("connection", (socket) => {
       name: roomName,
       state: [],
       word: getRandomWord(),
+      startTime: new Date().getTime(),
     });
     socket.emit("roomCreated", roomName);
     emitGameState(roomName);
@@ -163,6 +164,7 @@ io.on("connection", (socket) => {
       name: roomName,
       state: [],
       word: payload.word || getRandomWord(),
+      startTime: new Date().getTime(),
     });
     emitGameState(roomName);
     saveRoomsState();
@@ -191,7 +193,7 @@ io.on("connection", (socket) => {
     );
     const room = rooms.find((x) => x.name === data.room);
     const correctWord = room.word;
-    if (room.won || room.lost) {
+    if (room.won || room.lost || room.done) {
       return;
     }
 
@@ -277,6 +279,17 @@ io.on("connection", (socket) => {
       room.answerWas = correctWord;
       console.log(`${channel} lost their game! (${correctWord})`);
       io.to(channel).emit("lose", correctWord);
+    }
+    if (room.done) {
+      let history = [];
+      if (!fs.existsSync("./history")) {
+        fs.mkdirSync("./history");
+      }
+      if (fs.existsSync(`./history/${room.name}.json`)) {
+        history = require(`./history/${room.name}.json`);
+      }
+      history.push(room);
+      fs.writeFileSync(`./history/${room.name}.json`, JSON.stringify(history));
     }
     emitGameState(channel);
     saveRoomsState();
