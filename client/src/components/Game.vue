@@ -13,8 +13,11 @@
       <row
         v-for="(row, index) in rows"
         v-bind:key="index"
-        style="flex: 0 100%; display: flex;"
+        style="flex: 0 100%; display: flex"
         :tiles="row.tiles"
+        :screen="screen"
+        :guessInput="guessInput"
+        :showGuess="firstEmptyIndex === index"
       >
       </row>
     </div>
@@ -41,9 +44,6 @@ export default {
       // todo: see above
       return 5; // this.gameState.rows[0].tiles.length;
     },
-    availableWidth() {
-      return Math.min(this.screen.width, 500);
-    },
     availableHeight() {
       return this.screen.height - (48 + 189);
     },
@@ -55,5 +55,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

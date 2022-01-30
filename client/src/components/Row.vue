@@ -1,20 +1,24 @@
 <template>
   <div>
-    <div v-if="false">
-      <Tile
-        v-for="(n, index) in 5"
+    <div style="display: flex; flex: 0 100%" v-if="showGuess">
+      <div
+        v-for="(tile, index) in tiles"
         v-bind:key="index"
-        :large="large"
-        :mini="mini"
-        :letter="guessInput[index]"
-        :screen="screen"
-      />
+        style="flex: 1; padding: 2px"
+      >
+        <Tile
+          :large="large"
+          :mini="mini"
+          :letter="guessInput[index]"
+          :screen="screen"
+        />
+      </div>
     </div>
     <div style="display: flex; flex: 0 100%" v-else>
       <div
         v-for="(tile, index) in tiles"
         v-bind:key="index"
-        style="flex: 1; padding: 2px;"
+        style="flex: 1; padding: 2px"
       >
         <v-tooltip right color="primary">
           <template v-slot:activator="{ on, attrs }">

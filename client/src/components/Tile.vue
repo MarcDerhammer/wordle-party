@@ -1,5 +1,10 @@
 <template>
-  <div class="baseTile" :class="getClass(status)">
+  <div
+    :style="`font-size: ${size}px`"
+    ref="tile"
+    class="baseTile"
+    :class="getClass(status)"
+  >
     {{ letter || "&nbsp;" }}
   </div>
 </template>
@@ -7,9 +12,15 @@
 <script>
 export default {
   name: "Tile",
-  data: () => ({}),
-  mounted() {},
-  computed: {},
+  data: () => ({
+    size: "33",
+  }),
+  mounted() {
+    this.$nextTick(() => {
+      const min = Math.min(this.screen.width, this.screen.height - (48 + 189));
+      this.size = min / 12;
+    });
+  },
   methods: {
     getClass(status) {
       let cl = "baseTile";
@@ -46,6 +57,13 @@ export default {
     screen: Object,
     large: Boolean,
   },
+  watch: {
+    // prettier-ignore
+    screen: function(val) {
+      const min = Math.min(val.width, val.height - (48+189));
+      this.size = min / 10;
+    },
+  },
 };
 </script>
 
@@ -60,6 +78,8 @@ export default {
   opacity: 0.3;
   height: 100%;
   width: 100%;
+  font-size: 2.5rem;
+  overflow: hidden;
 }
 .baseTileMini {
   width: 15px !important;
