@@ -177,7 +177,7 @@ export default {
   },
   methods: {
     share() {
-      const url = "https://wordle-party.web.app/" + this.currentRoom;
+      const url = "https://wordleparty.net/" + this.currentRoom;
       if (!navigator.share) {
         navigator.clipboard.writeText(url);
         this.snackbar = true;

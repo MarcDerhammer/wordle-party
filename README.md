@@ -22,4 +22,4 @@ Todo:
 - Room passcodes
 - User-specific history
 
-https://wordle-party.web.app/
+https://wordleparty.net/
