@@ -121,7 +121,7 @@ io.on("connection", (socket) => {
       emitGameState(data);
       return;
     }
-    socket.emit("error", "Room not found!");
+    socket.emit("roomNotFound", "Room not found!");
   });
   socket.on("leave", (data) => {
     console.log(socket.username + " is leaving " + data);
@@ -179,6 +179,15 @@ io.on("connection", (socket) => {
     if (!fullValidWordList.includes(word.toLowerCase()) && word !== correctWord) {
       console.log(`${word} is an invalid guess`);
       socket.emit("badGuess", word);
+      return;
+    }
+
+    const MILLISECONDS_BETWEEN_GUESSES = 3000;
+
+    if (room.state.find(x => new Date().getTime() - x.timestamp < MILLISECONDS_BETWEEN_GUESSES)) {
+      // TOO FAST
+      console.log(`Rate limit.. slow down`);
+      socket.emit("tooFast", word);
       return;
     }
 

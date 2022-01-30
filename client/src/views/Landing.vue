@@ -117,7 +117,6 @@ export default {
       }
       if (key.toLowerCase() === "enter") {
         this.guess();
-        this.guessInput = "";
         this.emitTyping();
         return;
       }
@@ -141,7 +140,6 @@ export default {
         this.guessInput.length !== 5
       ) {
         this.text = "Invalid input!";
-        this.guessInput = "";
         this.snackbar = true;
         return;
       }
@@ -200,33 +198,16 @@ export default {
     badGuess: function (word) {
       this.snackbar = true;
       this.text = `"${word}" is not in the valid word list!`;
+      this.guessInput = word;
     },
-    win: function (count) {
+    tooFast: function (word) {
       this.snackbar = true;
-      switch (count) {
-        case 1:
-          this.text = "NO FUCKING WAY";
-          break;
-        case 2:
-          this.text = "Amazing";
-          break;
-        case 3:
-          this.text = "Wicked!";
-          break;
-        case 4:
-          this.text = "Nice job";
-          break;
-        case 5:
-          this.text = "You did it!";
-          break;
-        case 6:
-          this.text = "Nice, that was close!";
-          break;
-      }
+      this.text = `Slow down!  You're guessing too fast!`;
+      this.guessInput = word;
     },
-    lose: function (word) {
-      this.snackbar = true;
-      this.text = `Aw you suck, the word was "${word}"`;
+    win: function () {
+    },
+    lose: function () {
     },
   },
 };

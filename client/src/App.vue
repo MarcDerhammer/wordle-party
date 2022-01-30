@@ -119,6 +119,14 @@
     <v-dialog max-width="400" v-model="showNewGame">
       <new-game-options @start="start" @close="showNewGame = false" />
     </v-dialog>
+    <v-snackbar top v-model="snackbar">
+      {{ text }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="pink" text v-bind="attrs" @click="snackbar = false">
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -141,6 +149,8 @@ export default {
     showNewGame: false,
     menu: false,
     fireworksInterval: null,
+    snackbar: false,
+    text: null
   }),
   computed: {
     version() {
@@ -153,7 +163,7 @@ export default {
   created() {
     this.username = localStorage.getItem("name");
     if (!this.username) {
-      this.setName("Anon-" + this.getRandomIntInclusive(0, 50));
+      this.setName("Anon-" + Math.round(this.$randomInRange(0, 99)));
     }
   },
   methods: {
@@ -208,6 +218,7 @@ export default {
     },
     leave(room) {
       this.$socket.emit("leave", room);
+      this.menu = false;
     },
     newGame() {
       this.showNewGame = true;
@@ -247,6 +258,10 @@ export default {
       this.currentRoom = null;
       console.log("left room " + room);
       localStorage.setItem("lastRoom", null);
+    },
+    roomNotFound: function () {
+      this.text = `Room not found!`;
+      this.snackbar = true;
     },
     gameState: function (state) {
       this.gameState = state;
