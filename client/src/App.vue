@@ -125,6 +125,8 @@
 <script>
 import NewGameOptions from "./components/NewGameOptions.vue";
 import TopBar from "./components/TopBar.vue";
+const confetti = require("canvas-confetti");
+
 export default {
   components: { TopBar, NewGameOptions },
   name: "App",
@@ -138,6 +140,7 @@ export default {
     gameState: {},
     showNewGame: false,
     menu: false,
+    fireworksInterval: null,
   }),
   computed: {
     version() {
@@ -247,6 +250,42 @@ export default {
     },
     gameState: function (state) {
       this.gameState = state;
+
+      if (this.gameState.won) {
+        clearInterval(this.fireworksInterval);
+        const defaults = {
+          startVelocity: 13,
+          spread: 360,
+          ticks: 60,
+          zIndex: 0,
+        };
+        const particleCount = 25;
+        this.fireworksInterval = setInterval(() => {
+          // since particles fall down, start a bit higher than random
+          confetti.default(
+            Object.assign({}, defaults, {
+              particleCount,
+              origin: {
+                x: this.$randomInRange(0.1, 0.3),
+                y: Math.random() - 0.2,
+              },
+            })
+          );
+          setTimeout(() => {
+            confetti.default(
+              Object.assign({}, defaults, {
+                particleCount,
+                origin: {
+                  x: this.$randomInRange(0.7, 0.9),
+                  y: Math.random() - 0.2,
+                },
+              })
+            );
+          }, this.$randomInRange(0, 500));
+        }, 500);
+      } else {
+        clearInterval(this.fireworksInterval);
+      }
     },
   },
 };

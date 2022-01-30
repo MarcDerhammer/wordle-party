@@ -14,6 +14,10 @@ const socketConnection =
 
 Vue.config.productionTip = false;
 
+Vue.prototype.$randomInRange = (min, max) => {
+  return Math.random() * (max - min) + min;
+};
+
 Vue.use(
   new VueSocketIO({
     debug: true,

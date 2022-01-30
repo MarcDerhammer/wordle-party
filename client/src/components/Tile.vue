@@ -10,10 +10,12 @@
 </template>
 
 <script>
+const confetti = require("canvas-confetti");
+
 export default {
   name: "Tile",
   data: () => ({
-    size: 33
+    size: 33,
   }),
   mounted() {
     this.$nextTick(() => {
@@ -26,6 +28,23 @@ export default {
     });
   },
   methods: {
+    fireConfetti() {
+      const height = window.innerHeight;
+      const width = window.innerWidth;
+      const tileX = this.$refs.tile.getBoundingClientRect().x + this.size;
+      const tileY = this.$refs.tile.getBoundingClientRect().y + this.size;
+      confetti.default({
+        angle: this.$randomInRange(80, 110),
+        spread: this.$randomInRange(30, 50),
+        startVelocity: this.$randomInRange(15, 30),
+        particleCount: this.$randomInRange(30, 50),
+        origin: {
+          x: tileX / width,
+          y: tileY / height,
+        },
+        gravity: 1,
+      });
+    },
     getClass(status) {
       let cl = "baseTile";
       if (this.mini) {
@@ -63,6 +82,11 @@ export default {
     large: Boolean,
   },
   watch: {
+    status() {
+      if (this.status === "correct") {
+        this.fireConfetti();
+      }
+    },
     // prettier-ignore
     screen: function(val) {
       if (this.mini) {
@@ -98,8 +122,7 @@ export default {
   opacity: 1;
   align-items: center;
   display: flex;
-  border: solid 2px rgba(5, 5, 5, .5) !important;
-
+  border: solid 2px rgba(5, 5, 5, 0.5) !important;
 }
 .filled {
   border: solid 2px rgba(95, 95, 95, 0.9) !important;
