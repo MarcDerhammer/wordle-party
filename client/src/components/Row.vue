@@ -1,44 +1,45 @@
 <template>
   <div>
-    <div style="display: flex; flex: 0 100%" v-if="showGuess">
-      <div
-        v-for="(tile, index) in tiles"
-        v-bind:key="index"
-        style="flex: 1; padding: 3px"
-      >
-        <Tile
-          :large="large"
-          :mini="mini"
-          :letter="guessInput[index]"
-          :screen="screen"
-        />
-      </div>
-    </div>
-    <div style="display: flex; flex: 0 100%" v-else>
-      <div
-        v-for="(tile, index) in tiles"
-        v-bind:key="index"
-        style="flex: 1; padding: 3px"
-      >
-        <v-tooltip right color="primary">
-          <template v-slot:activator="{ on, attrs }">
+    <v-tooltip right>
+      <template v-slot:activator="{ on, attrs }">
+        <div v-on="on" style="display: flex; flex: 0 100%" v-if="showGuess">
+          <div
+            v-for="(tile, index) in tiles"
+            v-bind:key="index"
+            style="flex: 1; padding: 3px"
+          >
             <Tile
-              v-on="on"
-              v-bind="attrs"
+              :mini="mini"
+              :letter="guessInput[index]"
+              :screen="screen"
+            />
+          </div>
+        </div>
+        <div
+          v-on="on"
+          v-bind="attrs"
+          style="display: flex; flex: 0 100%"
+          v-else
+        >
+          <div
+            v-for="(tile, index) in tiles"
+            v-bind:key="index"
+            style="flex: 1; padding: 3px"
+          >
+            <Tile
               :mini="mini"
               :letter="tile.letter"
               :status="tile.status"
               :screen="screen"
               :large="large"
             />
-          </template>
-          <v-chip v-if="author" class="ma-1" color="primary" pill>
-            <v-icon left> mdi-account-outline </v-icon>
-            {{ author }}
-          </v-chip>
-        </v-tooltip>
+          </div>
+        </div>
+      </template>
+      <div>
+        <v-icon>mdi-account</v-icon><span>{{ author || "..." }}</span>
       </div>
-    </div>
+    </v-tooltip>
   </div>
 </template>
 
@@ -54,9 +55,7 @@ export default {
       return this.tiles[index].letter || `&nbsp`;
     },
   },
-  data: () => ({
-    emptyStr: "dd",
-  }),
+  data: () => ({}),
   props: {
     tiles: Array,
     guessInput: String,

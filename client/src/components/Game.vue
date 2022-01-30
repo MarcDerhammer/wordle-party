@@ -1,14 +1,10 @@
 <template>
-  <div style="position: fixed; bottom: 180px; left: 0; width: 100%">
+  <div
+    :style="`position: fixed; bottom: ${keyboardHeight}px; left: 0; width: 100%`"
+  >
     <div
       :style="`max-height: ${availableHeight}px; aspect-ratio: ${colCount} / ${rowCount}`"
-      style="
-        bottom: 180px;
-        max-width: 700px;
-        margin: 0 auto;
-        display: flex;
-        flex-wrap: wrap;
-      "
+      style="max-width: 700px; margin: 0 auto; display: flex; flex-wrap: wrap"
     >
       <row
         v-for="(row, index) in rows"
@@ -18,6 +14,7 @@
         :screen="screen"
         :guessInput="guessInput"
         :showGuess="firstEmptyIndex === index"
+        :author="row.author"
       >
       </row>
     </div>
@@ -29,7 +26,9 @@ import Row from "./Row.vue";
 export default {
   name: "Game",
   components: { Row },
-  data: () => ({}),
+  data: () => ({
+    keyboardHeight: 200,
+  }),
   props: {
     rows: Array,
     guessInput: String,
@@ -45,7 +44,7 @@ export default {
       return 5; // this.gameState.rows[0].tiles.length;
     },
     availableHeight() {
-      return this.screen.height - (48 + 189);
+      return this.screen.height - (90 + this.keyboardHeight);
     },
     firstEmptyIndex() {
       return this.rows.findIndex((x) => x.tiles.find((y) => !y.status));

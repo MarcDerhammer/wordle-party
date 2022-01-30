@@ -9,7 +9,30 @@
       </v-col>
     </v-row>
     <div v-else>
-      <Game :screen="screen" :rows="gameState.rows" :guessInput="guessInput" />
+      <v-tooltip
+        absolute
+        transition="expand"
+        top
+        :allow-overflow="false"
+        v-model="showLive"
+        style="text-align: right"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <Game
+            v-on="on"
+            v-bind="attrs"
+            :screen="screen"
+            :rows="gameState.rows"
+            :guessInput="guessInput"
+          />
+        </template>
+        <mini-guess
+          v-for="(guess, index) in liveGuesses"
+          v-bind:key="index"
+          :guessInput="guess.guessInput"
+          :name="guess.name"
+        />
+      </v-tooltip>
       <div>
         <virtual-keyboard
           :dialogOpen="dialogOpen"
@@ -25,63 +48,6 @@
           :gameState="gameState"
         />
       </div>
-      <v-row
-        v-if="width < 1000"
-        no-gutters
-        style="max-width: 500px; margin: auto"
-        justify="center"
-      >
-        <v-col
-          cols="12"
-          v-for="(guess, index) in liveGuesses.filter(
-            (x) => now - 5000 < x.timestamp
-          )"
-          v-bind:key="index"
-          no-gutters
-        >
-          <mini-guess
-            :name="guess.name"
-            :guessInput="guess.guessInput"
-            :screen="screen"
-          />
-        </v-col>
-      </v-row>
-      <div v-else>
-        <div
-          style="
-            position: fixed;
-            top: 90px;
-            margin-left: -125px;
-            text-align: right;
-            width: 600px;
-          "
-        >
-          <v-row
-            v-for="(guess, index) in liveGuesses
-              .filter((x) => now - 5000 < x.timestamp)
-              .sort((a, b) => {
-                var textA = a.name.toUpperCase();
-                var textB = b.name.toUpperCase();
-                return textA < textB ? -1 : textA > textB ? 1 : 0;
-              })"
-            v-bind:key="index"
-            no-gutters
-          >
-            <v-col cols="12">
-              <mini-guess
-                :name="guess.name"
-                :guessInput="guess.guessInput"
-                large
-                :screen="screen"
-              />
-            </v-col>
-          </v-row>
-        </div>
-        <div style="position: fixed; top: 90px; right: 20px">
-          <h1>Join on your phone!</h1>
-          <h2>wordle-party.web.app/{{ currentRoom }}</h2>
-        </div>
-      </div>
     </div>
     <v-snackbar top v-model="snackbar">
       {{ text }}
@@ -96,17 +62,17 @@
 
 <script>
 import Game from "../components/Game.vue";
-import MiniGuess from "../components/MiniGuess.vue";
 import VirtualKeyboard from "../components/VirtualKeyboard.vue";
 import GameOverCard from "../components/GameOverCard.vue";
+import MiniGuess from "../components/MiniGuess.vue";
 
 export default {
   name: "TopBar",
   components: {
     Game,
     VirtualKeyboard,
-    MiniGuess,
     GameOverCard,
+    MiniGuess,
   },
   computed: {
     rows() {
@@ -191,6 +157,7 @@ export default {
     now: new Date().getTime(),
     height: window.innerHeight,
     width: window.innerWidth,
+    showLive: false,
   }),
   props: {
     currentRoom: String,
@@ -203,6 +170,12 @@ export default {
       if (this.guessInput) {
         this.emitTyping();
       }
+      this.liveGuesses = this.liveGuesses.filter(
+        (x) => this.now - x.timestamp < 8000
+      );
+      if (!this.liveGuesses.length) {
+        this.showLive = false;
+      }
     }, 1000);
     window.addEventListener("resize", () => {
       this.height = window.innerHeight;
@@ -212,12 +185,17 @@ export default {
   sockets: {
     liveGuess: function (data) {
       this.liveGuesses = this.liveGuesses.filter((x) => x.id !== data.id);
-      if (this.$socket.id !== data.id) {
+      if (this.$socket.id !== data.id && data.guessInput) {
         this.liveGuesses.unshift(data);
       }
       this.liveGuesses = this.liveGuesses.sort((a, b) => {
         return b.lastChange - a.lastChange;
       });
+      if (this.liveGuesses.length === 0) {
+        this.showLive = false;
+      } else {
+        this.showLive = true;
+      }
     },
     badGuess: function (word) {
       this.snackbar = true;

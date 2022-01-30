@@ -13,10 +13,14 @@
 export default {
   name: "Tile",
   data: () => ({
-    size: "33",
+    size: 33
   }),
   mounted() {
     this.$nextTick(() => {
+      if (this.mini) {
+        this.size = 15;
+        return;
+      }
       const min = Math.min(this.screen.width, this.screen.height - (48 + 189));
       this.size = min / 12;
     });
@@ -26,6 +30,7 @@ export default {
       let cl = "baseTile";
       if (this.mini) {
         cl += "Mini";
+        return cl;
       }
       if (this.letter) {
         cl += " filled ";
@@ -60,6 +65,9 @@ export default {
   watch: {
     // prettier-ignore
     screen: function(val) {
+      if (this.mini) {
+        return;
+      }
       const min = Math.min(val.width, val.height - (48 + 189));
       this.size = min / 12;
     },
@@ -82,24 +90,16 @@ export default {
   overflow: hidden;
 }
 .baseTileMini {
-  width: 15px !important;
-  border: solid 2px rgba(95, 95, 95, 0.3);
-  height: 15px !important;
-  font-size: 0.7rem;
+  width: 25px !important;
+  height: 25px !important;
   margin: 1px;
   justify-content: center;
+  font-size: 15px;
+  opacity: 1;
   align-items: center;
   display: flex;
-}
-.baseTileLarge {
-  width: 28px !important;
-  border: solid 2px rgba(95, 95, 95, 0.3);
-  height: 28px !important;
-  font-size: 23px;
-  margin: 1px;
-  justify-content: center;
-  align-items: center;
-  display: flex;
+  border: solid 2px rgba(5, 5, 5, .5) !important;
+
 }
 .filled {
   border: solid 2px rgba(95, 95, 95, 0.9) !important;
@@ -114,15 +114,14 @@ export default {
 .partial {
   background-color: #b59f3b;
   border: unset !important;
-  animation: yellowShadow .7s;
+  animation: yellowShadow 0.7s;
   z-index: 998;
 }
 .correct {
   background-color: #538d4e;
   border: unset !important;
-  animation: greenShadow .8s;
+  animation: greenShadow 0.8s;
   z-index: 999;
-
 }
 @keyframes shake {
   0% {
