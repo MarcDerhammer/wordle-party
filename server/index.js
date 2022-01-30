@@ -25,15 +25,15 @@ const saveRoomsState = () => {
   fs.writeFileSync("./rooms.json", JSON.stringify(rooms));
 };
 const sendRoomCount = (roomName) => {
-  if (!roomName) { 
+  if (!roomName) {
     return;
   }
   const room = io.sockets.adapter.rooms.get(roomName);
   if (!room) {
     return;
   }
-  io.to(roomName).emit('roomCount', room.size || 0);
-}
+  io.to(roomName).emit("roomCount", room.size || 0);
+};
 
 const emitGameState = (roomName) => {
   const room = rooms.find((x) => x.name === roomName);
@@ -47,7 +47,7 @@ const emitGameState = (roomName) => {
     won: room.won,
     lost: room.lost,
     answerWas: room.answerWas,
-    done: room.done
+    done: room.done,
   };
 
   io.to(roomName).emit("gameState", payload);
@@ -70,23 +70,24 @@ const fillGameState = (existingState) => {
 
 const PORT = config.port;
 
-
 const getUnusedRoomCode = () => {
-    let roomCode = getRoomCode(4);
-    while (rooms.find(x => x.name === roomCode)) {
-        roomCode = getRoomCode(4);
-    }
-    return roomCode;
-}
+  let roomCode = getRoomCode(4);
+  while (rooms.find((x) => x.name === roomCode)) {
+    roomCode = getRoomCode(4);
+  }
+  return roomCode;
+};
 
 const getRoomCode = (length) => {
-    const randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let result = '';
-    for (let i = 0; i < length; i++ ) {
-        result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
-    }
-    return result;
-}
+  const randomChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += randomChars.charAt(
+      Math.floor(Math.random() * randomChars.length)
+    );
+  }
+  return result;
+};
 
 function getRandomWord() {
   return words[Math.round(Math.random() * (words.length - 1))].toUpperCase();
@@ -124,7 +125,9 @@ io.on("connection", (socket) => {
     saveRoomsState();
   });
   socket.on("join", (data) => {
-    console.log(`${socket.username || '[unknown]'} is attempting to join ${data}`);
+    console.log(
+      `${socket.username || "[unknown]"} is attempting to join ${data}`
+    );
     if (rooms.find((x) => x.name === data)) {
       socket.join(data);
       socket.emit("roomJoined", data);
@@ -146,7 +149,9 @@ io.on("connection", (socket) => {
   });
   socket.on("newGame", (payload) => {
     const roomName = payload.room;
-    console.log("New game called by " + socket.username || '[Unknown]' + ' in ' + roomName);
+    console.log(
+      "New game called by " + socket.username || "[Unknown]" + " in " + roomName
+    );
     const existingRoom = rooms.find((x) => x.name === roomName);
     if (!existingRoom || !existingRoom.done) {
       console.log("Game is not over yet...");
@@ -165,30 +170,35 @@ io.on("connection", (socket) => {
   socket.on("typing", (data) => {
     const room = data.room;
     if (data.guessInput !== socket.lastGuessInput) {
-        socket.lastChange = new Date().getTime();
+      socket.lastChange = new Date().getTime();
     }
     socket.lastGuessInput = data.guessInput;
     const input = data.guessInput;
     socket.lastGuessInput = data.guessInput;
     io.to(room).emit("liveGuess", {
-        id: socket.id,
-        name: socket.username || 'Someone',
-        guessInput: input,
-        timestamp: new Date().getTime(),
-        lastChange: socket.lastChange || new Date().getTime()
+      id: socket.id,
+      name: socket.username || "Someone",
+      guessInput: input,
+      timestamp: new Date().getTime(),
+      lastChange: socket.lastChange || new Date().getTime(),
     });
   });
   socket.on("guess", (data) => {
     const word = data.word.toUpperCase().trim().substring(0, 5);
     const channel = data.room;
-    console.log(`${socket.username || '[unknown]'} guessed "${word}" in ${channel}`);
+    console.log(
+      `${socket.username || "[unknown]"} guessed "${word}" in ${channel}`
+    );
     const room = rooms.find((x) => x.name === data.room);
     const correctWord = room.word;
     if (room.won || room.lost) {
       return;
     }
 
-    if (!fullValidWordList.includes(word.toLowerCase()) && word !== correctWord) {
+    if (
+      !fullValidWordList.includes(word.toLowerCase()) &&
+      word !== correctWord
+    ) {
       console.log(`${word} is an invalid guess`);
       socket.emit("badGuess", word);
       return;
@@ -196,7 +206,11 @@ io.on("connection", (socket) => {
 
     const MILLISECONDS_BETWEEN_GUESSES = 3000;
 
-    if (room.state.find(x => new Date().getTime() - x.timestamp < MILLISECONDS_BETWEEN_GUESSES)) {
+    if (
+      room.state.find(
+        (x) => new Date().getTime() - x.timestamp < MILLISECONDS_BETWEEN_GUESSES
+      )
+    ) {
       // TOO FAST
       console.log(`Rate limit.. slow down`);
       socket.emit("tooFast", word);
@@ -246,7 +260,11 @@ io.on("connection", (socket) => {
       }
     });
 
-    room.state.push({ tiles: newRow, author: socket.username, timestamp: new Date().getTime() });
+    room.state.push({
+      tiles: newRow,
+      author: socket.username,
+      timestamp: new Date().getTime(),
+    });
 
     if (correctWord === word) {
       room.won = true;
@@ -263,7 +281,7 @@ io.on("connection", (socket) => {
     emitGameState(channel);
     saveRoomsState();
   });
-  socket.on('roomCount', (data) => {
+  socket.on("roomCount", (data) => {
     if (!data) {
       return;
     }
@@ -271,6 +289,6 @@ io.on("connection", (socket) => {
     if (!room) {
       return;
     }
-    socket.emit('roomCount', room.size || 0);
-  })
+    socket.emit("roomCount", room.size || 0);
+  });
 });
