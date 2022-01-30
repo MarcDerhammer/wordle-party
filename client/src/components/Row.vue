@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="display: flex; flex-wrap: no-wrap" v-if="showGuess">
+    <div v-if="false">
       <Tile
         v-for="(n, index) in 5"
         v-bind:key="index"
@@ -10,26 +10,30 @@
         :screen="screen"
       />
     </div>
-    <div style="display: flex; flex-wrap: no-wrap" v-else>
-      <v-tooltip right color="primary">
-        <template v-slot:activator="{ on, attrs }">
-          <Tile
-            v-on="on"
-            v-bind="attrs"
-            v-for="(gameTile, index) in tiles"
-            v-bind:key="index"
-            :mini="mini"
-            :letter="gameTile.letter"
-            :status="gameTile.status"
-            :screen="screen"
-            :large="large"
-          />
-        </template>
-        <v-chip v-if="author" class="ma-1" color="primary" pill>
-          <v-icon left> mdi-account-outline </v-icon>
-          {{ author }}
-        </v-chip>
-      </v-tooltip>
+    <div style="display: flex; flex: 0 100%" v-else>
+      <div
+        v-for="(tile, index) in tiles"
+        v-bind:key="index"
+        style="flex: 1; padding: 2px;"
+      >
+        <v-tooltip right color="primary">
+          <template v-slot:activator="{ on, attrs }">
+            <Tile
+              v-on="on"
+              v-bind="attrs"
+              :mini="mini"
+              :letter="tile.letter"
+              :status="tile.status"
+              :screen="screen"
+              :large="large"
+            />
+          </template>
+          <v-chip v-if="author" class="ma-1" color="primary" pill>
+            <v-icon left> mdi-account-outline </v-icon>
+            {{ author }}
+          </v-chip>
+        </v-tooltip>
+      </div>
     </div>
   </div>
 </template>
@@ -41,7 +45,14 @@ export default {
   components: {
     Tile,
   },
-  data: () => ({}),
+  methods: {
+    lookupLetter(index) {
+      return this.tiles[index].letter || `&nbsp`;
+    },
+  },
+  data: () => ({
+    emptyStr: "dd",
+  }),
   props: {
     tiles: Array,
     guessInput: String,

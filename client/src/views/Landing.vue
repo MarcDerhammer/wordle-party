@@ -9,55 +9,34 @@
       </v-col>
     </v-row>
     <div v-else>
-      <v-row justify="center">
+      <Game :screen="screen" :rows="gameState.rows" :guessInput="guessInput" />
+      <div v-if="false"
+        :style="`max-height: ${availableHeight}px; aspect-ratio: ${cols} / ${rows}`"
+        style="
+          max-width: 800px;
+          position: fixed;
+          bottom: 180px;
+          margin: 0 auto;
+          width: 100%;
+          border: solid red 1px;
+          display: flex;
+          flex-wrap: wrap;
+        "
+      >
         <div
-          :style="`max-height: ${availableHeight}px; aspect-ratio: ${cols} / ${rows}`"
-          style="
-            max-width: 800px;
-            position: fixed;
-            bottom: 180px;
-            margin: 0 auto;
-            width: 100%;
-            border: solid red 1px;
-            display: flex;
-            flex-wrap: wrap;
-          "
+          v-for="n in rows"
+          v-bind:key="n"
+          style="border: solid 1px blue; flex: 0 1 100%; display: flex"
         >
           <div
-            v-for="n in rows"
+            v-for="n in cols"
             v-bind:key="n"
-            style="
-              border: solid 1px blue;
-              flex: 0 1 100%;
-              display: flex;
-            "
+            style="flex: 1; border: solid 1px green"
           >
-            <div
-              v-for="n in cols"
-              v-bind:key="n"
-              style="flex: 1; border: solid 1px green"
-            >
-              A
-            </div>
+            A
           </div>
         </div>
-        <game
-          v-if="false"
-          :screen="screen"
-          :rows="gameState.rows"
-          :guessInput="guessInput"
-          style="
-            max-width: 500px;
-            touch-action: manipulation;
-            position: fixed;
-            bottom: 180px;
-            margin: 0 auto;
-            left: 0;
-            right: 0;
-            width: 100%;
-          "
-        />
-      </v-row>
+      </div>
       <div>
         <virtual-keyboard
           :dialogOpen="dialogOpen"

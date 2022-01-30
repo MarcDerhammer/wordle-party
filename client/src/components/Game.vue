@@ -1,17 +1,22 @@
 <template>
-  <div>
+  <div style="position: fixed; bottom: 180px; left: 0; width: 100%">
     <div
-      no-gutters
-      v-for="(row, index) in rows"
-      v-bind:key="index"
+      :style="`max-height: ${availableHeight}px; aspect-ratio: ${colCount} / ${rowCount}`"
+      style="
+        bottom: 180px;
+        max-width: 700px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+      "
     >
-      <Row
-        :showGuess="firstEmptyIndex === index"
+      <row
+        v-for="(row, index) in rows"
+        v-bind:key="index"
+        style="flex: 0 100%; display: flex;"
         :tiles="row.tiles"
-        :guessInput="guessInput"
-        :author="row.author"
-        :screen="screen"
-      />
+      >
+      </row>
     </div>
   </div>
 </template>
@@ -20,9 +25,7 @@
 import Row from "./Row.vue";
 export default {
   name: "Game",
-  components: {
-    Row,
-  },
+  components: { Row },
   data: () => ({}),
   props: {
     rows: Array,
@@ -30,6 +33,20 @@ export default {
     screen: Object,
   },
   computed: {
+    rowCount() {
+      // todo.. in case we ever change guess count or word length
+      return 6; // this.gameState.rows.length;
+    },
+    colCount() {
+      // todo: see above
+      return 5; // this.gameState.rows[0].tiles.length;
+    },
+    availableWidth() {
+      return Math.min(this.screen.width, 500);
+    },
+    availableHeight() {
+      return this.screen.height - (48 + 189);
+    },
     firstEmptyIndex() {
       return this.rows.findIndex((x) => x.tiles.find((y) => !y.status));
     },
@@ -37,3 +54,6 @@ export default {
   created() {},
 };
 </script>
+
+<style scoped>
+</style>

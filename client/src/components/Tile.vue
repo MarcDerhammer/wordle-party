@@ -1,42 +1,15 @@
 <template>
-  <div
-    ref="tile"
-    :style="`height: ${width}px`"
-    :class="large ? 'baseTileLarge' : getClass(status)"
-  >
-    {{ letter }}
+  <div class="baseTile" :class="getClass(status)">
+    {{ letter || "&nbsp;" }}
   </div>
 </template>
 
 <script>
-const keyboardHeight = 180;
-const headerHeight = 100;
-
 export default {
   name: "Tile",
-  data: () => ({
-    width: '32'
-  }),
-  mounted() {
-    this.$nextTick(() => {
-      this.width = this.$refs.tile.clientWidth;
-    });
-  },
-  computed: {
-    width() {
-      return this.$refs.tile;
-    },
-    size() {
-      const availableHeight =
-        this.screen.height - (keyboardHeight + headerHeight);
-      const availableWidth = this.screen.width;
-      const min = Math.min(availableHeight, availableWidth);
-      return min / 6;
-    },
-    fontSize() {
-      return this.size * 0.7 + "px";
-    },
-  },
+  data: () => ({}),
+  mounted() {},
+  computed: {},
   methods: {
     getClass(status) {
       let cl = "baseTile";
@@ -71,7 +44,7 @@ export default {
       default: false,
     },
     screen: Object,
-    large: Boolean
+    large: Boolean,
   },
 };
 </script>
@@ -79,15 +52,15 @@ export default {
 <style scoped>
 .baseTile {
   border: solid 2px rgb(95, 95, 95);
-  margin: 2px;
   justify-content: center;
   align-items: center;
   display: flex;
   font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
   font-weight: bold;
   opacity: 0.3;
-  flex: 1 1 10px;
-  }
+  height: 100%;
+  width: 100%;
+}
 .baseTileMini {
   width: 15px !important;
   border: solid 2px rgba(95, 95, 95, 0.3);
