@@ -2,7 +2,7 @@
   <v-card>
     <v-card-title>New Game Options</v-card-title>
     <v-card-text>
-      <v-form ref="form" v-model="valid">
+      <v-form @submit.prevent ref="form" v-model="valid">
         <v-switch v-model="randomWord" label="Random word" />
         <v-text-field
           v-if="!randomWord"
@@ -13,6 +13,7 @@
           @click:append="showPassword = !showPassword"
           @input="newWord = newWord.toUpperCase()"
           @keyup.enter="trySubmit"
+          @keydown.enter.prevent
           :rules="wordRules"
         />
         <v-text-field
@@ -20,6 +21,7 @@
           label="Optional message to be displayed with the word"
           placeholder="Hint, theme, fun greeting, whatever!"
           @keyup.enter="trySubmit"
+          @keydown.enter.prevent
           :rules="messageRules"
         />
       </v-form>
