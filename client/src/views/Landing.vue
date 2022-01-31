@@ -51,7 +51,9 @@
       </div>
     </div>
     <div
-      v-if="liveGuesses.length"
+      v-if="liveGuesses.length.filter(
+          (x) => this.now - x.lastChange < 10000
+        )"
       style="
         position: fixed;
         top: 48px;
