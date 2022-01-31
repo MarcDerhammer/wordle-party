@@ -201,10 +201,7 @@ export default {
         this.emitTyping();
       }
       this.liveGuesses = this.liveGuesses.filter(
-        (x) => this.now - x.timestamp < 8000
-      );
-      this.liveGuesses = this.liveGuesses.filter(
-        (x) => this.now - x.lastChange < 15000
+        (x) => this.now - x.lastChange < 10000
       );
     }, 3000);
     window.addEventListener("resize", () => {
