@@ -122,7 +122,7 @@ export default {
   opacity: 1;
   align-items: center;
   display: flex;
-  border: solid 2px rgba(5, 5, 5, 0.5) !important;
+  border: solid 2px rgba(95, 95, 95, 0.9) !important;
 }
 .filled {
   border: solid 2px rgba(95, 95, 95, 0.9) !important;

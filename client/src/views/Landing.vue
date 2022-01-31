@@ -1,6 +1,11 @@
 <template>
   <div style="margin-top: 20px; text-align: center">
-    <v-row align="center" justify="center" style="max-width: 800px; margin: auto" v-if="!currentRoom">
+    <v-row
+      align="center"
+      justify="center"
+      style="max-width: 800px; margin: auto"
+      v-if="!currentRoom"
+    >
       <v-col cols="12" md="6">
         <v-btn color="primary" @click="$emit('create')" x-large>New Game</v-btn>
       </v-col>
@@ -12,30 +17,7 @@
       </v-col>
     </v-row>
     <div v-else>
-      <v-tooltip
-        absolute
-        transition="expand"
-        top
-        :allow-overflow="false"
-        v-model="showLive"
-        style="text-align: right"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <Game
-            v-on="on"
-            v-bind="attrs"
-            :screen="screen"
-            :rows="gameState.rows"
-            :guessInput="guessInput"
-          />
-        </template>
-        <mini-guess
-          v-for="(guess, index) in liveGuesses"
-          v-bind:key="index"
-          :guessInput="guess.guessInput"
-          :name="guess.name"
-        />
-      </v-tooltip>
+      <Game :screen="screen" :rows="gameState.rows" :guessInput="guessInput" />
       <div>
         <virtual-keyboard
           :dialogOpen="dialogOpen"
@@ -52,6 +34,33 @@
         />
       </div>
     </div>
+    <div
+      v-if="liveGuesses.length"
+      style="
+        position: fixed;
+        top: 48px;
+        margin: 0 auto;
+        left: 4px;
+        z-index: 9999;
+        max-width: 300px;
+        border-radius: 4px;
+        padding: 5px;
+        background-color: grey;
+        opacity: 0.7;
+      "
+    >
+      <v-row
+        no-gutters
+        v-for="(guess, index) in liveGuesses"
+        v-bind:key="index"
+        style="border-radius: 8px"
+      >
+        <v-col>
+          <mini-guess :guessInput="guess.guessInput" :name="guess.name" />
+        </v-col>
+      </v-row>
+    </div>
+
     <v-snackbar top v-model="snackbar">
       {{ text }}
       <template v-slot:action="{ attrs }">
@@ -77,7 +86,7 @@ export default {
     VirtualKeyboard,
     GameOverCard,
     MiniGuess,
-    About
+    About,
   },
   computed: {
     rows() {
@@ -160,7 +169,6 @@ export default {
     now: new Date().getTime(),
     height: window.innerHeight,
     width: window.innerWidth,
-    showLive: false,
   }),
   props: {
     currentRoom: String,
@@ -176,9 +184,9 @@ export default {
       this.liveGuesses = this.liveGuesses.filter(
         (x) => this.now - x.timestamp < 8000
       );
-      if (!this.liveGuesses.length) {
-        this.showLive = false;
-      }
+      this.liveGuesses = this.liveGuesses.filter(
+        (x) => this.now - x.lastChange < 15000
+      );
     }, 3000);
     window.addEventListener("resize", () => {
       this.height = window.innerHeight;
@@ -194,11 +202,6 @@ export default {
       this.liveGuesses = this.liveGuesses.sort((a, b) => {
         return b.lastChange - a.lastChange;
       });
-      if (this.liveGuesses.length === 0) {
-        this.showLive = false;
-      } else {
-        this.showLive = true;
-      }
     },
     badGuess: function (word) {
       this.snackbar = true;
@@ -210,10 +213,8 @@ export default {
       this.text = `Slow down!  You're guessing too fast!`;
       this.guessInput = word;
     },
-    win: function () {
-    },
-    lose: function () {
-    },
+    win: function () {},
+    lose: function () {},
   },
 };
 </script>

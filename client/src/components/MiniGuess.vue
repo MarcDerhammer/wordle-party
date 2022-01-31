@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <v-row justify="center">
+      <v-row no-gutters justify="center">
         <v-col>{{ name }}: </v-col>
         <v-col style="white-space: nowrap">
           <tile
@@ -13,7 +13,6 @@
               display: inline-block;
               text-align: center;
               white-space: nowrap;
-
             "
             mini
             :letter="tile.letter"
