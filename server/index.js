@@ -48,6 +48,9 @@ const emitGameState = (roomName) => {
     lost: room.lost,
     answerWas: room.answerWas,
     done: room.done,
+    message: room.message,
+    custom: room.custom,
+    username: room.username,
   };
 
   io.to(roomName).emit("gameState", payload);
@@ -120,6 +123,9 @@ io.on("connection", (socket) => {
       state: [],
       word: getRandomWord(),
       startTime: new Date().getTime(),
+      custom: data.word !== undefined && data.word !== '',
+      message: data.message,
+      username: socket.username,
     });
     socket.emit("roomCreated", roomName);
     emitGameState(roomName);
@@ -165,7 +171,11 @@ io.on("connection", (socket) => {
       state: [],
       word: payload.word || getRandomWord(),
       startTime: new Date().getTime(),
+      custom: payload.word !== undefined && payload.word !== "",
+      message: payload.message,
+      username: socket.username,
     });
+    io.to(roomName).emit('newGame');
     emitGameState(roomName);
     saveRoomsState();
   });

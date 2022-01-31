@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-top: 20px; text-align: center">
+  <div style="text-align: center">
     <v-row
       align="center"
       justify="center"
@@ -17,6 +17,24 @@
       </v-col>
     </v-row>
     <div v-else>
+      <v-alert
+        v-model="alert"
+        type="info"
+        style="max-width: 700px; margin: auto; opacity: 0.7; z-index: 999"
+        v-if="gameState.custom || gameState.message"
+        dense
+        dismissible
+      >
+        <div v-if="gameState.custom">
+          Custom word chosen by <b>{{ gameState.username }}</b>
+        </div>
+        <div v-else>
+          Random word
+        </div>
+        <div v-if="gameState.message">
+          <b>{{ gameState.username }}</b> says "{{ gameState.message }}"
+        </div>
+      </v-alert>
       <Game :screen="screen" :rows="gameState.rows" :guessInput="guessInput" />
       <div>
         <virtual-keyboard
@@ -169,6 +187,7 @@ export default {
     now: new Date().getTime(),
     height: window.innerHeight,
     width: window.innerWidth,
+    alert: true
   }),
   props: {
     currentRoom: String,
@@ -215,6 +234,10 @@ export default {
     },
     win: function () {},
     lose: function () {},
+    newGame: function() {
+      this.alert = true;
+      this.guessInput = '';
+    }
   },
 };
 </script>

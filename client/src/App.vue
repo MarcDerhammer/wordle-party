@@ -208,11 +208,12 @@ export default {
     join(room) {
       this.$socket.emit("join", room.toUpperCase());
     },
-    start(word) {
+    start(word, message) {
       console.log("starting with " + word);
       this.$socket.emit("newGame", {
         room: this.currentRoom,
         word,
+        message
       });
       this.showNewGame = false;
     },
