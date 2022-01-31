@@ -28,9 +28,7 @@
         <div v-if="gameState.custom">
           Custom word chosen by <b>{{ gameState.username }}</b>
         </div>
-        <div v-else>
-          Random word
-        </div>
+        <div v-else>Random word</div>
         <div v-if="gameState.message">
           <b>{{ gameState.username }}</b> says "{{ gameState.message }}"
         </div>
@@ -69,7 +67,9 @@
     >
       <v-row
         no-gutters
-        v-for="(guess, index) in liveGuesses"
+        v-for="(guess, index) in liveGuesses.filter(
+          (x) => this.now - x.lastChange < 10000
+        )"
         v-bind:key="index"
         style="border-radius: 8px"
       >
@@ -187,7 +187,7 @@ export default {
     now: new Date().getTime(),
     height: window.innerHeight,
     width: window.innerWidth,
-    alert: true
+    alert: true,
   }),
   props: {
     currentRoom: String,
@@ -200,9 +200,6 @@ export default {
       if (this.guessInput) {
         this.emitTyping();
       }
-      this.liveGuesses = this.liveGuesses.filter(
-        (x) => this.now - x.lastChange < 10000
-      );
     }, 3000);
     window.addEventListener("resize", () => {
       this.height = window.innerHeight;
@@ -231,10 +228,10 @@ export default {
     },
     win: function () {},
     lose: function () {},
-    newGame: function() {
+    newGame: function () {
       this.alert = true;
-      this.guessInput = '';
-    }
+      this.guessInput = "";
+    },
   },
 };
 </script>
