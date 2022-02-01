@@ -8,7 +8,7 @@
   >
     <div
       :style="`max-height: ${availableHeight}px; aspect-ratio: ${colCount} / ${rowCount}`"
-      style="max-width: 700px; margin: 0 auto; display: flex; flex-wrap: wrap"
+      style="margin: 0 auto; display: flex; flex-wrap: wrap"
     >
       <row
         v-for="(row, index) in rows"
