@@ -107,7 +107,7 @@
         <v-card-title>Enter room code!</v-card-title>
         <v-card-text>
           <v-text-field
-            autofocus
+            :autofocus="!existingRooms || !existingRooms.length"
             @keyup.enter="join(roomCode)"
             v-model="roomCode"
             counter="4"
@@ -116,6 +116,7 @@
           </v-text-field>
           <v-select
             label="Recent rooms"
+            autofocus
             v-if="existingRooms && existingRooms.length"
             :items="existingRooms"
             v-model="selectedRoom"
@@ -230,6 +231,9 @@ export default {
       this.$socket.emit("create", "somedata");
     },
     join(room) {
+      if (this.currentRoom) {
+        this.leave(this.currentRoom);
+      }
       this.$socket.emit("join", room.toUpperCase());
     },
     start(word, message) {
@@ -254,7 +258,9 @@ export default {
       this.$socket.emit("leave", room);
       this.menu = false;
       localStorage.removeItem("lastRoom");
-      this.$router.push('/');
+      if (this.$route.path !== "/") {
+        this.$router.push('/');
+      }
     },
     newGame() {
       this.showNewGame = true;
