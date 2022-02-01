@@ -7,16 +7,20 @@ import VueSocketIO from "vue-socket.io";
 import SocketIO from "socket.io-client";
 
 import "./registerServiceWorker";
-const socketConnection =
-  process.env.NODE_ENV === "development"
-    ? SocketIO("http://localhost:32392")
-    : SocketIO("https://wordle.marcapi.com");
+
+const BASE_API = process.env.NODE_ENV === "development" ?
+  "http://localhost:32392" :
+  "https://wordle.marcapi.com";
+
+const socketConnection = SocketIO(BASE_API);
 
 Vue.config.productionTip = false;
 
 Vue.prototype.$randomInRange = (min, max) => {
   return Math.random() * (max - min) + min;
 };
+
+Vue.prototype.$baseApi = BASE_API;
 
 Vue.use(
   new VueSocketIO({

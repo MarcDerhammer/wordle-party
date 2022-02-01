@@ -17,23 +17,30 @@
       </v-col>
     </v-row>
     <div v-else>
-      <v-row style="opacity: 0.5" no-gutters align="center" justify="center">
-      </v-row>
-      <Game :screen="screen" :rows="gameState.rows" :guessInput="guessInput" />
-      <div>
-        <virtual-keyboard
-          :dialogOpen="dialogOpen"
-          @key="handleVKeyboardPress"
-          :gameState="gameState"
+      <div v-if="!history">
+        <Game
+          :screen="screen"
+          :rows="gameState.rows"
+          :guessInput="guessInput"
         />
+        <div>
+          <virtual-keyboard
+            :dialogOpen="dialogOpen"
+            @key="handleVKeyboardPress"
+            :gameState="gameState"
+          />
+        </div>
+        <div>
+          <GameOverCard
+            @newGame="$emit('newGame', currentRoom)"
+            @share="share"
+            v-if="gameState.done"
+            :gameState="gameState"
+          />
+        </div>
       </div>
-      <div>
-        <GameOverCard
-          @newGame="$emit('newGame', currentRoom)"
-          @share="share"
-          v-if="gameState.done"
-          :gameState="gameState"
-        />
+      <div v-else>
+        <history @back="$emit('back')" :screen="screen" :room="currentRoom" />
       </div>
     </div>
     <div
@@ -114,6 +121,7 @@ import VirtualKeyboard from "../components/VirtualKeyboard.vue";
 import GameOverCard from "../components/GameOverCard.vue";
 import MiniGuess from "../components/MiniGuess.vue";
 import About from "../components/About.vue";
+import History from './History.vue';
 
 export default {
   name: "TopBar",
@@ -123,6 +131,7 @@ export default {
     GameOverCard,
     MiniGuess,
     About,
+    History,
   },
   computed: {
     rows() {
@@ -213,15 +222,17 @@ export default {
     width: window.innerWidth,
     alert: false,
     showConnections: false,
+    guessInterval: null,
   }),
   props: {
     currentRoom: String,
     gameState: Object,
     dialogOpen: Boolean,
     roomCount: String,
+    history: Boolean,
   },
   created() {
-    setInterval(() => {
+    this.guessInterval = setInterval(() => {
       this.now = new Date().getTime();
       if (this.guessInput) {
         this.emitTyping();
@@ -231,6 +242,9 @@ export default {
       this.height = window.innerHeight;
       this.width = window.innerWidth;
     });
+  },
+  destroyed() {
+    clearInterval(this.guessInterval);
   },
   sockets: {
     liveGuess: function (data) {

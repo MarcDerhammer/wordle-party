@@ -8,6 +8,7 @@ const validWords = require("./validWords.json");
 const fullValidWordList = words.concat(validWords);
 const fs = require("fs");
 const config = require("./config");
+const cors = require('cors');
 
 const io = new Server(server, {
   cors: {
@@ -107,8 +108,28 @@ String.prototype.replaceAt = function (index, replacement) {
   return this.substring(0, index) + replacement + this.substring(index + 1);
 };
 
+app.use(cors({
+  origin: config.origins
+}))
+
 app.get("/ping", (req, res) => {
   res.send("pong");
+});
+
+app.get("/history", (req, res) => {
+  if (!req.query.room) {
+    res.status(404);
+    res.send('no');
+    return;
+  }
+  const room = req.query.room;
+  if (fs.existsSync(`./history/${room}.json`)) {
+    const json = require(`./history/${room}.json`);
+    res.send(json);
+    return;
+  }
+  res.status(404);
+  res.send('no');
 });
 
 server.listen(PORT, () => {
@@ -294,6 +315,7 @@ io.on("connection", (socket) => {
       io.to(channel).emit("lose", correctWord);
     }
     if (room.done) {
+      room.finishTime = new Date().getTime();
       let history = [];
       if (!fs.existsSync("./history")) {
         fs.mkdirSync("./history");

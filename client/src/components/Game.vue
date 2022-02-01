@@ -1,6 +1,10 @@
 <template>
   <div
-    :style="`position: fixed; bottom: ${keyboardHeight}px; left: 0; width: 100%`"
+    :style="`${
+      history
+        ? ''
+        : `position: fixed; bottom: ${keyboardHeight}px; left: 0; width: 100%`
+    }`"
   >
     <div
       :style="`max-height: ${availableHeight}px; aspect-ratio: ${colCount} / ${rowCount}`"
@@ -33,6 +37,7 @@ export default {
     rows: Array,
     guessInput: String,
     screen: Object,
+    history: Boolean,
   },
   computed: {
     rowCount() {

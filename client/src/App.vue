@@ -9,6 +9,7 @@
       @share="share"
       @help="$refs.mainView.showInfoToast()"
       @people="$refs.mainView.showConnectionInfo()"
+      @history="history = true"
     />
     <v-main>
       <router-view
@@ -23,6 +24,8 @@
         @share="share"
         ref="mainView"
         :roomCount="roomCount"
+        :history="history"
+        @back="history = false"
       />
     </v-main>
     <v-dialog max-width="400" v-model="menu">
@@ -159,7 +162,8 @@ export default {
     snackbar: false,
     text: null,
     connected: false,
-    roomCount: null
+    roomCount: null,
+    history: false
   }),
   computed: {
     version() {
@@ -173,6 +177,9 @@ export default {
     this.username = localStorage.getItem("name");
     if (!this.username) {
       this.setName("Anon-" + Math.round(this.$randomInRange(0, 99)));
+    }
+    if (this.$route.params.history) {
+      this.history = true;
     }
     setInterval(() => {
       if (this.currentRoom) {
@@ -218,7 +225,7 @@ export default {
       this.$socket.emit("newGame", {
         room: this.currentRoom,
         word,
-        message
+        message,
       });
       this.showNewGame = false;
     },
@@ -274,7 +281,7 @@ export default {
       localStorage.setItem("lastRoom", room);
       this.$socket.emit("roomCount", this.currentRoom);
     },
-    roomCount: function(count) {
+    roomCount: function (count) {
       this.roomCount = count.toString();
     },
     roomLeft: function (room) {
@@ -290,7 +297,7 @@ export default {
     gameState: function (state) {
       // todo.. better
       if (!this.gameState.state && (state.custom || state.message)) {
-        this.$refs.mainView.showInfoToast()
+        this.$refs.mainView.showInfoToast();
       }
       this.gameState = state;
       if (this.gameState.won) {

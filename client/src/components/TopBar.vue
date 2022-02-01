@@ -14,11 +14,14 @@
         <v-badge inline v-else color="#538d4e" :content="roomCount">
           <v-icon small>mdi-account-group</v-icon>
         </v-badge>
-        <v-icon @click="$emit('help')" style="margin-left: 6px; transform: translate(0px, -3px)"
+        <v-icon @click="$emit('help')" class="babyButton"
           >mdi-help-circle-outline</v-icon
         >
-        <v-icon @click="$emit('share')" style="margin-left: 6px;  transform: translate(0px, -3px)"
+        <v-icon @click="$emit('share')" class="babyButton"
           >mdi-share-variant</v-icon
+        >
+        <v-icon @click="$emit('history')" class="babyButton"
+          >mdi-history</v-icon
         >
       </h4>
     </h3>
@@ -41,6 +44,9 @@
       <v-icon @click="$emit('share')" large style="margin-left: 13px"
         >mdi-share-variant</v-icon
       >
+      <v-icon @click="$emit('history')" large style="margin-left: 13px"
+        >mdi-history</v-icon
+      >
     </h2>
     <v-spacer />
     <h3>{{ username }}</h3>
@@ -59,3 +65,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.babyButton {
+  margin-left: 6px;
+  transform: translate(0px, -3px);
+}
+</style>
