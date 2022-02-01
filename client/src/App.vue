@@ -113,6 +113,13 @@
             @input="roomCode = roomCode.toUpperCase()"
           >
           </v-text-field>
+          <v-select
+            label="Recent rooms"
+            v-if="existingRooms && existingRooms.length"
+            :items="existingRooms"
+            v-model="selectedRoom"
+            @change="join(selectedRoom)"
+          ></v-select>
         </v-card-text>
         <v-card-actions>
           <v-btn @click="showJoin = false">Close</v-btn>
@@ -163,7 +170,9 @@ export default {
     text: null,
     connected: false,
     roomCount: null,
-    history: false
+    history: false,
+    roomList: [],
+    selectedRoom: null
   }),
   computed: {
     version() {
@@ -175,6 +184,7 @@ export default {
   },
   created() {
     this.username = localStorage.getItem("name");
+    this.existingRooms = JSON.parse(localStorage.getItem("existingRooms") || '[]');
     if (!this.username) {
       this.setName("Anon-" + Math.round(this.$randomInRange(0, 99)));
     }
@@ -186,6 +196,7 @@ export default {
         this.$socket.emit("roomCount", this.currentRoom);
       }
     }, 5000);
+
   },
   methods: {
     share() {
@@ -241,6 +252,7 @@ export default {
     leave(room) {
       this.$socket.emit("leave", room);
       this.menu = false;
+      localStorage.removeItem("lastRoom");
     },
     newGame() {
       this.showNewGame = true;
@@ -280,6 +292,9 @@ export default {
       this.showJoin = false;
       localStorage.setItem("lastRoom", room);
       this.$socket.emit("roomCount", this.currentRoom);
+      this.existingRooms = this.existingRooms.filter((x) => x !== room);
+      this.existingRooms.unshift(room);
+      localStorage.setItem("existingRooms", JSON.stringify(this.existingRooms));
     },
     roomCount: function (count) {
       this.roomCount = count.toString();
