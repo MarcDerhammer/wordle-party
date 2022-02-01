@@ -6,6 +6,9 @@
       @menu="menu = true"
       :connected="connected"
       :roomCount="roomCount"
+      @share="share"
+      @help="$refs.mainView.showInfoToast()"
+      @people="$refs.mainView.showConnectionInfo()"
     />
     <v-main>
       <router-view
@@ -18,6 +21,8 @@
         :gameState="gameState"
         :dialogOpen="dialogOpen"
         @share="share"
+        ref="mainView"
+        :roomCount="roomCount"
       />
     </v-main>
     <v-dialog max-width="400" v-model="menu">
@@ -283,8 +288,11 @@ export default {
       this.snackbar = true;
     },
     gameState: function (state) {
+      // todo.. better
+      if (!this.gameState.state && (state.custom || state.message)) {
+        this.$refs.mainView.showInfoToast()
+      }
       this.gameState = state;
-
       if (this.gameState.won) {
         clearInterval(this.fireworksInterval);
         const defaults = {

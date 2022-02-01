@@ -17,22 +17,8 @@
       </v-col>
     </v-row>
     <div v-else>
-      <v-alert
-        v-model="alert"
-        type="info"
-        style="max-width: 700px; margin: auto; opacity: 0.7; z-index: 999"
-        v-if="gameState.custom || gameState.message"
-        dense
-        dismissible
-      >
-        <div v-if="gameState.custom">
-          Custom word chosen by <b>{{ gameState.username }}</b>
-        </div>
-        <div v-else>Random word</div>
-        <div v-if="gameState.message">
-          <b>{{ gameState.username }}</b> says "{{ gameState.message }}"
-        </div>
-      </v-alert>
+      <v-row style="opacity: 0.5" no-gutters align="center" justify="center">
+      </v-row>
       <Game :screen="screen" :rows="gameState.rows" :guessInput="guessInput" />
       <div>
         <virtual-keyboard
@@ -51,9 +37,7 @@
       </div>
     </div>
     <div
-      v-if="liveGuesses.filter(
-          (x) => this.now - x.lastChange < 10000
-        ).length"
+      v-if="liveGuesses.filter((x) => this.now - x.lastChange < 10000).length"
       style="
         position: fixed;
         top: 48px;
@@ -81,11 +65,43 @@
       </v-row>
     </div>
 
-    <v-snackbar top v-model="snackbar">
+    <v-snackbar app top v-model="snackbar">
       {{ text }}
       <template v-slot:action="{ attrs }">
         <v-btn color="pink" text v-bind="attrs" @click="snackbar = false">
           Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+    <v-snackbar v-model="alert" top app>
+      <div v-if="gameState.custom">
+        Custom word chosen by <b>{{ gameState.username }}</b>
+      </div>
+      <div v-else>This is a <b>random</b> word!</div>
+      <div v-if="gameState.message">
+        <b>{{ gameState.username }}</b> says "{{ gameState.message }}"
+      </div>
+      <template v-slot:action="{ attrs }">
+        <v-btn color="pink" text v-bind="attrs" @click="alert = false">
+          hide
+        </v-btn>
+      </template>
+    </v-snackbar>
+    <v-snackbar timeout="2000" v-model="showConnections" top app>
+      <div v-if="roomCount == 1">
+        There is <b>1</b> user connected to {{ currentRoom }}
+      </div>
+      <div v-else>
+        There are <b>{{ roomCount }}</b> users connected to {{ currentRoom }}
+      </div>
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="pink"
+          text
+          v-bind="attrs"
+          @click="showConnections = false"
+        >
+          hide
         </v-btn>
       </template>
     </v-snackbar>
@@ -131,6 +147,12 @@ export default {
     },
   },
   methods: {
+    showInfoToast() {
+      this.alert = true;
+    },
+    showConnectionInfo() {
+      this.showConnections = true;
+    },
     share() {
       this.$emit("share");
     },
@@ -189,12 +211,14 @@ export default {
     now: new Date().getTime(),
     height: window.innerHeight,
     width: window.innerWidth,
-    alert: true,
+    alert: false,
+    showConnections: false,
   }),
   props: {
     currentRoom: String,
     gameState: Object,
     dialogOpen: Boolean,
+    roomCount: String,
   },
   created() {
     setInterval(() => {
@@ -230,8 +254,11 @@ export default {
     },
     win: function () {},
     lose: function () {},
-    newGame: function () {
-      this.alert = true;
+    newGame: function (payload) {
+      // todo... better here.
+      if (payload.custom || payload.message) {
+        this.alert = true;
+      }
       this.guessInput = "";
     },
   },

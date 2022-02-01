@@ -35,13 +35,8 @@ const sendRoomCount = (roomName) => {
   io.to(roomName).emit("roomCount", room.size || 0);
 };
 
-const emitGameState = (roomName) => {
-  const room = rooms.find((x) => x.name === roomName);
-  if (!room) {
-    console.log(room + " not found?!");
-    return;
-  }
-  const payload = {
+const buildPayload = (room) => {
+  return {
     rows: fillGameState(room.state),
     state: room.state,
     won: room.won,
@@ -52,8 +47,16 @@ const emitGameState = (roomName) => {
     custom: room.custom,
     username: room.username,
   };
+}
 
-  io.to(roomName).emit("gameState", payload);
+const emitGameState = (roomName) => {
+  const room = rooms.find((x) => x.name === roomName);
+  if (!room) {
+    console.log(room + " not found?!");
+    return;
+  }
+
+  io.to(roomName).emit("gameState", buildPayload(room));
 };
 
 const fillGameState = (existingState) => {
@@ -175,7 +178,7 @@ io.on("connection", (socket) => {
       message: payload.message,
       username: socket.username,
     });
-    io.to(roomName).emit('newGame');
+    io.to(roomName).emit('newGame', buildPayload(rooms.find(x => x.name === roomName)));
     emitGameState(roomName);
     saveRoomsState();
   });
