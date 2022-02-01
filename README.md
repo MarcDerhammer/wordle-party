@@ -14,11 +14,10 @@ Features:
 - Wordle
 - Guess with friends in a Room
 - Random words or a user can choose the next word
+- History
 
 Todo:
-- Fun animations
 - Option for "voting" or something (instead of anarchy)?
-- Game history for a Room
 - Room passcodes
 - User-specific history
 
