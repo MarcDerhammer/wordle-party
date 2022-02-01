@@ -10,6 +10,7 @@
       @help="$refs.mainView.showInfoToast()"
       @people="$refs.mainView.showConnectionInfo()"
       @history="history = true"
+      @changeRoom="showJoin = true"
     />
     <v-main>
       <router-view

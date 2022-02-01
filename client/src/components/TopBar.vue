@@ -6,8 +6,10 @@
         v-if="currentRoom && $vuetify.breakpoint.xs"
         style="display: block; font-size: 0.7rem"
       >
-        Code:
-        <code style="font-size: 0.8rem">{{ currentRoom }}</code>
+        Room:
+        <code @click="$emit('changeRoom')" style="font-size: 0.8rem">{{
+          currentRoom
+        }}</code>
         <v-icon color="red" x-small v-if="!connected"
           >mdi-cloud-off-outline</v-icon
         >
@@ -30,8 +32,10 @@
       v-if="currentRoom && $vuetify.breakpoint.smAndUp"
       style="display: block"
     >
-      Code:
-      <code style="font-size: 1.8rem">{{ currentRoom }}</code>
+      Room:
+      <code @click="$emit('changeRoom')" style="font-size: 1.8rem">{{
+        currentRoom
+      }}</code>
       <v-icon style="margin-left: 13px" color="red" large v-if="!connected"
         >mdi-cloud-off-outline</v-icon
       >
