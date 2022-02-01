@@ -13,8 +13,8 @@
         </p>
         <p>
           This is the same game, but with the ability to solve the puzzle with
-          your friends. To start a game, click "NEW GAME", then share your room
-          code. The person joining will use the "JOIN GAME" option.
+          your friends. To start a game, click "NEW ROOM", then share your room
+          code. The person joining will use the "JOIN ROOM" option.
         </p>
         <p>
           Click the menu button <v-icon>mdi-menu</v-icon> at the top for more

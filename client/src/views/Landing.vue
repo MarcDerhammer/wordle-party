@@ -7,10 +7,10 @@
       v-if="!currentRoom"
     >
       <v-col cols="12" md="6">
-        <v-btn color="primary" @click="$emit('create')" x-large>New Game</v-btn>
+        <v-btn color="primary" @click="$emit('create')" x-large>New Room</v-btn>
       </v-col>
       <v-col cols="12" md="6">
-        <v-btn color="primary" @click="$emit('join')" x-large>Join Game</v-btn>
+        <v-btn color="primary" @click="$emit('join')" x-large>Join Room</v-btn>
       </v-col>
       <v-col cols="12">
         <About />

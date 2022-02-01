@@ -9,6 +9,7 @@ const fullValidWordList = words.concat(validWords);
 const fs = require("fs");
 const config = require("./config");
 const cors = require('cors');
+const requestIp = require('request-ip');
 
 const io = new Server(server, {
   cors: {
@@ -117,6 +118,8 @@ app.get("/ping", (req, res) => {
 });
 
 app.get("/history", (req, res) => {
+  const clientIp = requestIp.getClientIp(req);
+  console.log(`${clientIp} : /history : ` + req.query.room);
   if (!req.query.room) {
     res.status(404);
     res.send('no');
