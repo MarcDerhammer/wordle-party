@@ -13,6 +13,8 @@
       <v-progress-circular indeterminate />
     </div>
     <div v-else>
+      <div v-if="games && games.length === 0">No history yet....... go play!</div>
+
       <div v-for="(game, index) in games" v-bind:key="index">
         <v-card
           style="
@@ -113,6 +115,11 @@ export default {
           return b.startTime - a.startTime;
         });
         this.loading = false;
+      })
+      .catch((err) => {
+        console.error(err);
+        this.loading = false;
+        this.games = [];
       });
     this.timeInterval = setInterval(() => {
       this.now = new Date().getTime();
