@@ -253,6 +253,7 @@ export default {
       this.$socket.emit("leave", room);
       this.menu = false;
       localStorage.removeItem("lastRoom");
+      this.$router.push('/');
     },
     newGame() {
       this.showNewGame = true;
