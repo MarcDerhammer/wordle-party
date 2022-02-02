@@ -110,6 +110,7 @@
             :autofocus="!existingRooms || !existingRooms.length"
             @keyup.enter="join(roomCode)"
             v-model="roomCode"
+            label="Enter Room Code"
             counter="4"
             @input="roomCode = roomCode.toUpperCase()"
           >
@@ -303,6 +304,7 @@ export default {
       this.existingRooms = this.existingRooms.filter((x) => x !== room);
       this.existingRooms.unshift(room);
       localStorage.setItem("existingRooms", JSON.stringify(this.existingRooms));
+      this.selectedRoom = room;
     },
     roomCount: function (count) {
       this.roomCount = count.toString();
