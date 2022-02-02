@@ -342,7 +342,7 @@ export default {
           }
           if (navigator.setAppBadge) {
             if (!document.hasFocus()) {
-              navigator.setAppBadge("hey");
+              navigator.setAppBadge();
             }
           }
         }
