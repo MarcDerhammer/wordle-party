@@ -335,13 +335,15 @@ export default {
         this.$refs.mainView.showInfoToast();
       }
 
-      if (this.gameState.state.length !== state.state.length) {
-        if (document.hasFocus() && navigator && navigator.vibrate) {
-          navigator.vibrate([100, 50, 100]);
-        }
-        if (navigator.setAppBadge) {
-          if (!document.hasFocus()) {
-            navigator.setAppBadge("hey");
+      if (this.gameState && this.gameState.state) {
+        if (this.gameState.state.length !== state.state.length) {
+          if (document.hasFocus() && navigator && navigator.vibrate) {
+            navigator.vibrate([100, 50, 100]);
+          }
+          if (navigator.setAppBadge) {
+            if (!document.hasFocus()) {
+              navigator.setAppBadge("hey");
+            }
           }
         }
       }
