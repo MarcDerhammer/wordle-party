@@ -341,7 +341,7 @@ export default {
             navigator.vibrate([100, 50, 100]);
           }
           if (navigator.setAppBadge) {
-            if (!document.hasFocus()) {
+            if (document.visibilityState !== 'visible') {
               navigator.setAppBadge();
             }
           }
