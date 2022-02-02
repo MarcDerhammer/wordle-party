@@ -260,6 +260,9 @@ export default {
       this.snackbar = true;
       this.text = `"${word}" is not in the valid word list!`;
       this.guessInput = word;
+      if (navigator && navigator.vibrate) {
+        navigator.vibrate([200, 50, 200]);
+      }
     },
     tooFast: function (word) {
       this.snackbar = true;

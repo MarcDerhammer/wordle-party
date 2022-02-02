@@ -175,7 +175,7 @@ export default {
     roomCount: null,
     history: false,
     roomList: [],
-    selectedRoom: null
+    selectedRoom: null,
   }),
   computed: {
     version() {
@@ -187,7 +187,9 @@ export default {
   },
   created() {
     this.username = localStorage.getItem("name");
-    this.existingRooms = JSON.parse(localStorage.getItem("existingRooms") || '[]');
+    this.existingRooms = JSON.parse(
+      localStorage.getItem("existingRooms") || "[]"
+    );
     if (!this.username) {
       this.setName("Anon-" + Math.round(this.$randomInRange(0, 99)));
     }
@@ -199,12 +201,20 @@ export default {
         this.$socket.emit("roomCount", this.currentRoom);
       }
     }, 5000);
-
+    if (navigator.clearAppBadge) {
+      window.addEventListener(
+        "focus",
+        function () {
+          navigator.clearAppBadge();
+        },
+        false
+      );
+    }
   },
   methods: {
     share() {
       const url = "https://wordleparty.net/" + this.currentRoom;
-      if (!navigator.share) {
+      if (!navigator.canShare()) {
         navigator.clipboard.writeText(url);
         this.snackbar = true;
         this.text = "Copied to clipboard!";
@@ -260,7 +270,7 @@ export default {
       this.menu = false;
       localStorage.removeItem("lastRoom");
       if (this.$route.path !== "/") {
-        this.$router.push('/');
+        this.$router.push("/");
       }
     },
     newGame() {
@@ -324,7 +334,20 @@ export default {
       if (!this.gameState.state && (state.custom || state.message)) {
         this.$refs.mainView.showInfoToast();
       }
+
+      if (this.gameState.state.length !== state.state.length) {
+        if (document.hasFocus() && navigator && navigator.vibrate) {
+          navigator.vibrate([100, 50, 100]);
+        }
+        if (navigator.setAppBadge) {
+          if (!document.hasFocus()) {
+            navigator.setAppBadge("hey");
+          }
+        }
+      }
+
       this.gameState = state;
+
       if (this.gameState.won) {
         clearInterval(this.fireworksInterval);
         const defaults = {
