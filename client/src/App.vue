@@ -176,6 +176,7 @@ export default {
     history: false,
     roomList: [],
     selectedRoom: null,
+    appBadge: 0
   }),
   computed: {
     version() {
@@ -205,7 +206,8 @@ export default {
       window.addEventListener(
         "focus",
         function () {
-          navigator.clearAppBadge();
+          this.appBadge = 0;
+          navigator.setAppBadge(0);
         },
         false
       );
@@ -337,12 +339,16 @@ export default {
 
       if (this.gameState && this.gameState.state) {
         if (this.gameState.state.length !== state.state.length) {
+          this.appBadge++;
           if (document.hasFocus() && navigator && navigator.vibrate) {
             navigator.vibrate([100, 50, 100]);
           }
           if (navigator.setAppBadge) {
             if (document.visibilityState !== 'visible') {
-              navigator.setAppBadge();
+              navigator.setAppBadge(this.appBadge);
+            } else {
+              this.appBadge = 0;
+              navigator.clearAppBadge();
             }
           }
         }
