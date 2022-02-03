@@ -205,26 +205,13 @@ export default {
     }, 5000);
 
     document.addEventListener("visibilitychange", () => {
-      this.visible = document.visibilityState === "visible";
-      if (this.visible && navigator.clearAppBadge) {
-        this.appBadge = 0;
-        navigator.clearAppBadge();
+      if (document.visibilityState === "visible") {
+        if (navigator.clearAppBadge) {
+          navigator.clearAppBadge();
+          this.appBadge = 0;
+        }
       }
     });
-    window.onblur = () => {
-      this.visible = false;
-    };
-
-    if (navigator.clearAppBadge) {
-      window.addEventListener(
-        "focus",
-        function () {
-          this.appBadge = 0;
-          navigator.setAppBadge(0);
-        },
-        false
-      );
-    }
   },
   methods: {
     share() {
@@ -357,7 +344,7 @@ export default {
           }
           if (navigator.setAppBadge) {
             console.log(this.visible, this.appBadge + 1);
-            if (!this.visible) {
+            if (document.visibilityState !== "visible") {
               this.appBadge++;
               navigator.setAppBadge(this.appBadge);
             } else {
