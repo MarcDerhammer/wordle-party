@@ -176,7 +176,8 @@ export default {
     history: false,
     roomList: [],
     selectedRoom: null,
-    appBadge: 0
+    appBadge: 0,
+    visible: false,
   }),
   computed: {
     version() {
@@ -202,6 +203,18 @@ export default {
         this.$socket.emit("roomCount", this.currentRoom);
       }
     }, 5000);
+
+    document.addEventListener("visibilitychange", () => {
+      this.visible = document.visibilityState === "visible";
+      if (this.visible && navigator.clearAppBadge) {
+        this.appBadge = 0;
+        navigator.clearAppBadge();
+      }
+    });
+    window.onblur = () => {
+      this.visible = false;
+    };
+
     if (navigator.clearAppBadge) {
       window.addEventListener(
         "focus",
@@ -343,8 +356,8 @@ export default {
             navigator.vibrate([100, 50, 100]);
           }
           if (navigator.setAppBadge) {
-            console.log(document.visibilityState, this.appBadge + 1);
-            if (document.visibilityState !== 'visible') {
+            console.log(this.visible, this.appBadge + 1);
+            if (!this.visible) {
               this.appBadge++;
               navigator.setAppBadge(this.appBadge);
             } else {
