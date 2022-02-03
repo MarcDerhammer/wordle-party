@@ -339,12 +339,13 @@ export default {
 
       if (this.gameState && this.gameState.state) {
         if (this.gameState.state.length !== state.state.length) {
-          this.appBadge++;
           if (document.hasFocus() && navigator && navigator.vibrate) {
             navigator.vibrate([100, 50, 100]);
           }
           if (navigator.setAppBadge) {
+            console.log(document.visibilityState, this.appBadge + 1);
             if (document.visibilityState !== 'visible') {
+              this.appBadge++;
               navigator.setAppBadge(this.appBadge);
             } else {
               this.appBadge = 0;
