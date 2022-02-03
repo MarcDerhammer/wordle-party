@@ -216,7 +216,7 @@ export default {
   methods: {
     share() {
       const url = "https://wordleparty.net/" + this.currentRoom;
-      if (!navigator.canShare()) {
+      if (!navigator.share) {
         navigator.clipboard.writeText(url);
         this.snackbar = true;
         this.text = "Copied to clipboard!";
