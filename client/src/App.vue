@@ -176,6 +176,7 @@ export default {
     history: false,
     roomList: [],
     selectedRoom: null,
+    visible: true
   }),
   computed: {
     version() {
@@ -210,6 +211,16 @@ export default {
         false
       );
     }
+    document.addEventListener("visibilitychange", () => {
+      const state = document.visibilityState;
+      if (state === "hidden") {
+        this.visible = false;
+      }
+
+      if (state === "visible") {
+        this.visible = true;
+      }
+    });
   },
   methods: {
     share() {
@@ -337,11 +348,11 @@ export default {
 
       if (this.gameState && this.gameState.state) {
         if (this.gameState.state.length !== state.state.length) {
-          if (document.hasFocus() && navigator && navigator.vibrate) {
+          if (this.visible && navigator && navigator.vibrate) {
             navigator.vibrate([100, 50, 100]);
           }
           if (navigator.setAppBadge) {
-            if (document.visibilityState !== 'visible') {
+            if (!this.visible) {
               navigator.setAppBadge();
             }
           }
