@@ -214,7 +214,8 @@ io.on("connection", (socket) => {
       socket.username = data.name;
       version = data.version;
     }
-    console.log(socket.username + ` name set [${version}] from ${socket.handshake.address}`);
+    const ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
+    console.log(socket.username + ` name set [${version}] from ${ip}`);
   });
   socket.on("newGame", (payload) => {
     const roomName = payload.room;
