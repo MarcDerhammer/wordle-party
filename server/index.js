@@ -309,7 +309,8 @@ io.on("connection", (socket) => {
       const lastRow = room.state[room.state.length - 1].tiles;
       for (let i = 0; i < correctWord.length; i++) {
         if (lastRow[i].status === 'correct' && newRow[i].letter !== lastRow[i].letter) {
-          socket.emit("badGuessHardGreen", word)
+          socket.emit("badGuessHardGreen", word);
+          console.log('Hard mode detected not using same green: ' + newRow[i].letter);
           return;
         }
       }
@@ -319,6 +320,7 @@ io.on("connection", (socket) => {
       for (let i = 0; i < partials.length; i++) {
         if (!newWordCopy.includes(partials[i].letter)) {
           socket.emit("badGuessHardYellow", word);
+          console.log('Hard mode detected not using a yellow: ' + partials[i].letter);
           return;
         }
         newWordCopy.replace(partials[i].letter, '.');

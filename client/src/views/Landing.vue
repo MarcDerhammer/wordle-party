@@ -292,7 +292,7 @@ export default {
     lose: function () {},
     newGame: function (payload) {
       // todo... better here.
-      if (payload.custom || payload.message) {
+      if (payload.custom || payload.message || payload.hardMode) {
         this.alert = true;
       }
       this.guessInput = "";
