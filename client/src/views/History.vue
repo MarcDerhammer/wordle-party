@@ -13,22 +13,36 @@
       <v-progress-circular indeterminate />
     </div>
     <div v-else>
-      <div v-if="games && games.length === 0">No history yet....... go play!</div>
+      <div v-if="games && games.length === 0">
+        No history yet....... go play!
+      </div>
+      <v-btn
+        v-if="start !== 0"
+        @click="
+          start -= 10;
+          end -= 10;
+          scrollTop()
+        "
+        text
+        >Newer</v-btn
+      >
 
-      <div v-for="(game, index) in games" v-bind:key="index">
+      <div v-for="(game, index) in games.slice(start, end)" v-bind:key="index">
         <v-card
           style="
             margin: 20px;
             padding: 30px;
             padding-top: 0px;
             white-space: normal;
+            text-align: center;
           "
         >
-          <v-card-title v-if="game.custom">
-            <v-spacer />
+          <v-card-title
+            style="word-break: unset; text-align: center; display: block"
+            v-if="game.custom"
+          >
             Custom Word chosen by&nbsp;
             <b>{{ game.username || "Unknown" }}</b>
-            <v-spacer />
           </v-card-title>
           <v-card-title v-else
             ><v-spacer />Random Word<v-spacer
@@ -57,6 +71,17 @@
           </div>
         </v-card>
       </div>
+      <v-btn
+        style="margin-bottom: 13px"
+        v-if="end < games.length"
+        @click="
+          start += 10;
+          end += 10;
+          scrollTop()
+        "
+        text
+        >Older</v-btn
+      >
     </div>
   </div>
 </template>
@@ -76,7 +101,12 @@ export default {
       return this.screen.height - (48 + 189);
     },
   },
-  methods: {},
+  methods: {
+      scrollTop() {
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0; 
+      }
+  },
   data: () => ({
     now: new Date().getTime(),
     height: window.innerHeight,
@@ -84,6 +114,8 @@ export default {
     timeInterval: null,
     games: null,
     loading: false,
+    start: 0,
+    end: 10,
   }),
   props: {
     screen: Object,

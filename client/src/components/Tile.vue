@@ -80,10 +80,14 @@ export default {
     },
     screen: Object,
     large: Boolean,
+    history: {
+      type: Boolean,
+      default: false
+    }
   },
   watch: {
     status() {
-      if (this.status === "correct") {
+      if (this.status === "correct" && !this.history) {
         this.fireConfetti();
       }
     },

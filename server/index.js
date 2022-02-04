@@ -48,6 +48,7 @@ const buildPayload = (room) => {
     message: room.message,
     custom: room.custom,
     username: room.username,
+    hardMode: room.hardMode
   };
 }
 
@@ -201,6 +202,7 @@ io.on("connection", (socket) => {
       custom: payload.word !== undefined && payload.word !== "",
       message: payload.message,
       username: socket.username,
+      hardMode: payload.hardMode
     });
     io.to(roomName).emit('newGame', buildPayload(rooms.find(x => x.name === roomName)));
     emitGameState(roomName);
@@ -298,6 +300,27 @@ io.on("connection", (socket) => {
         letter.status = "wrong";
       }
     });
+
+    if (room.hardMode && room.state.length > 0) {
+      // ok first let's make sure the greens stayed green
+      const lastRow = room.state[room.state.length - 1].tiles;
+      for (let i = 0; i < correctWord.length; i++) {
+        if (lastRow[i].status === 'correct' && newRow[i].letter !== lastRow[i].letter) {
+          socket.emit("badGuessHardGreen", word)
+          return;
+        }
+      }
+      // ok now let's make sure all the partials were re-used...
+      let newWordCopy = word;
+      let partials = lastRow.filter(x => x.status === 'partial');
+      for (let i = 0; i < partials.length; i++) {
+        if (!newWordCopy.includes(partials[i].letter)) {
+          socket.emit("badGuessHardYellow", word);
+          return;
+        }
+        newWordCopy.replace(partials[i].letter, '.');
+      }
+    }
 
     room.state.push({
       tiles: newRow,

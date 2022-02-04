@@ -11,6 +11,7 @@
       style="margin: 0 auto; display: flex; flex-wrap: wrap"
     >
       <row
+        :history="history"
         v-for="(row, index) in rows"
         v-bind:key="index"
         style="flex: 0 100%; display: flex"

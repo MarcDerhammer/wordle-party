@@ -136,7 +136,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog max-width="400" v-model="showNewGame">
+    <v-dialog max-width="600" v-model="showNewGame">
       <new-game-options @start="start" @close="showNewGame = false" />
     </v-dialog>
     <v-snackbar top v-model="snackbar">
@@ -177,7 +177,6 @@ export default {
     roomList: [],
     selectedRoom: null,
     appBadge: 0,
-    visible: false,
   }),
   computed: {
     version() {
@@ -206,6 +205,7 @@ export default {
 
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") {
+        this.$refs.mainView.showInfoToast();
         if (navigator.clearAppBadge) {
           navigator.clearAppBadge();
           this.appBadge = 0;
@@ -249,12 +249,13 @@ export default {
       }
       this.$socket.emit("join", room.toUpperCase());
     },
-    start(word, message) {
+    start(word, message, hardMode) {
       console.log("starting with " + word);
       this.$socket.emit("newGame", {
         room: this.currentRoom,
         word,
         message,
+        hardMode
       });
       this.showNewGame = false;
     },
@@ -333,7 +334,7 @@ export default {
     },
     gameState: function (state) {
       // todo.. better
-      if (!this.gameState.state && (state.custom || state.message)) {
+      if (!this.gameState.state && (state.custom || state.message || state.hardMode)) {
         this.$refs.mainView.showInfoToast();
       }
 
@@ -343,7 +344,6 @@ export default {
             navigator.vibrate([100, 50, 100]);
           }
           if (navigator.setAppBadge) {
-            console.log(this.visible, this.appBadge + 1);
             if (document.visibilityState !== "visible") {
               this.appBadge++;
               navigator.setAppBadge(this.appBadge);

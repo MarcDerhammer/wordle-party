@@ -50,7 +50,7 @@
         top: 48px;
         margin: 0 auto;
         left: 4px;
-        z-index: 9999;
+        z-index: 1000;
         max-width: 300px;
         border-radius: 4px;
         padding: 5px;
@@ -72,7 +72,7 @@
       </v-row>
     </div>
 
-    <v-snackbar app top v-model="snackbar">
+    <v-snackbar style="z-index: 1001" app top v-model="snackbar">
       {{ text }}
       <template v-slot:action="{ attrs }">
         <v-btn color="pink" text v-bind="attrs" @click="snackbar = false">
@@ -80,7 +80,10 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-snackbar v-model="alert" top app>
+    <v-snackbar style="z-index: 1001" v-model="alert" top app>
+      <div v-if="gameState.hardMode">
+        <b style="color: red">HARD MODE IS ON!</b>
+      </div>
       <div v-if="gameState.custom">
         Custom word chosen by <b>{{ gameState.username }}</b>
       </div>
@@ -94,7 +97,7 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-snackbar timeout="2000" v-model="showConnections" top app>
+    <v-snackbar style="z-index: 1001" timeout="2000" v-model="showConnections" top app>
       <div v-if="roomCount == 1">
         There is <b>1</b> user connected to {{ currentRoom }}
       </div>
@@ -259,6 +262,22 @@ export default {
     badGuess: function (word) {
       this.snackbar = true;
       this.text = `"${word}" is not in the valid word list!`;
+      this.guessInput = word;
+      if (navigator && navigator.vibrate) {
+        navigator.vibrate([200, 50, 200]);
+      }
+    },
+    badGuessHardYellow: function (word) {
+      this.snackbar = true;
+      this.text = `Hard mode is enabled! You must re-use all yellows!`;
+      this.guessInput = word;
+      if (navigator && navigator.vibrate) {
+        navigator.vibrate([200, 50, 200]);
+      }
+    },
+    badGuessHardGreen: function (word) {
+      this.snackbar = true;
+      this.text = `Hard mode is enabled! You must keep the greens!`;
       this.guessInput = word;
       if (navigator && navigator.vibrate) {
         navigator.vibrate([200, 50, 200]);

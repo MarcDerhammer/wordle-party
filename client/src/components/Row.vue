@@ -32,6 +32,7 @@
               :status="tile.status"
               :screen="screen"
               :large="large"
+              :history="history"
             />
           </div>
         </div>
@@ -67,6 +68,7 @@ export default {
     },
     screen: Object,
     large: Boolean,
+    history: Boolean
   },
 };
 </script>
