@@ -200,7 +200,7 @@ io.on("connection", (socket) => {
       word: payload.word || getRandomWord(),
       startTime: new Date().getTime(),
       custom: payload.word !== undefined && payload.word !== "",
-      message: payload.message,
+      message: payload.message.trim(),
       username: socket.username,
       hardMode: payload.hardMode
     });
