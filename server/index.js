@@ -38,6 +38,9 @@ const sendRoomCount = (roomName) => {
 };
 
 const buildPayload = (room) => {
+  if (room.message) {
+    room.message = room.message.trim()
+  }
   return {
     rows: fillGameState(room.state),
     state: room.state,
@@ -200,7 +203,7 @@ io.on("connection", (socket) => {
       word: payload.word || getRandomWord(),
       startTime: new Date().getTime(),
       custom: payload.word !== undefined && payload.word !== "",
-      message: payload.message.trim(),
+      message: payload.message,
       username: socket.username,
       hardMode: payload.hardMode
     });
