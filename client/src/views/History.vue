@@ -21,7 +21,7 @@
         @click="
           start -= 10;
           end -= 10;
-          scrollTop()
+          scrollTop();
         "
         text
         >Newer</v-btn
@@ -38,14 +38,19 @@
           "
         >
           <v-card-title
-            style="word-break: unset; text-align: center; display: block"
+            style="word-break: unset; text-align: center; display: block; margin: 0px;"
             v-if="game.custom"
           >
             Custom Word chosen by&nbsp;
             <b>{{ game.username || "Unknown" }}</b>
           </v-card-title>
-          <v-card-title v-else
+          <v-card-title v-else style="margin: 0px"
             ><v-spacer />Random Word<v-spacer
+          /></v-card-title>
+          <v-card-title
+            v-if="game.hardMode"
+            style="color: red; margin: 0px; padding: 0px; font-weight: bold"
+            ><v-spacer />Hard mode!<v-spacer
           /></v-card-title>
           <v-card-text style="margin: 0px; padding: 0px" v-if="game.message">
             {{ game.username || "Unknown" }} says "{{ game.message }}"
@@ -77,7 +82,7 @@
         @click="
           start += 10;
           end += 10;
-          scrollTop()
+          scrollTop();
         "
         text
         >Older</v-btn
@@ -102,10 +107,10 @@ export default {
     },
   },
   methods: {
-      scrollTop() {
-          document.body.scrollTop = 0;
-          document.documentElement.scrollTop = 0; 
-      }
+    scrollTop() {
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    },
   },
   data: () => ({
     now: new Date().getTime(),

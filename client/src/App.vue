@@ -139,7 +139,7 @@
     <v-dialog max-width="600" v-model="showNewGame">
       <new-game-options @start="start" @close="showNewGame = false" />
     </v-dialog>
-    <v-snackbar top v-model="snackbar">
+    <v-snackbar style="z-index: 1001" top v-model="snackbar">
       {{ text }}
       <template v-slot:action="{ attrs }">
         <v-btn color="pink" text v-bind="attrs" @click="snackbar = false">
