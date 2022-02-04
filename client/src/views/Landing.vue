@@ -97,12 +97,19 @@
         </v-btn>
       </template>
     </v-snackbar>
-    <v-snackbar style="z-index: 1001" timeout="2000" v-model="showConnections" top app>
-      <div v-if="roomCount == 1">
-        There is <b>1</b> user connected to {{ currentRoom }}
-      </div>
-      <div v-else>
-        There are <b>{{ roomCount }}</b> users connected to {{ currentRoom }}
+    <v-snackbar
+      style="z-index: 1001"
+      timeout="2000"
+      v-model="showConnections"
+      top
+      app
+    >
+      <div>
+        Players here:
+        <span v-for="(name, index) in roomList" v-bind:key="index">
+          <b>{{ name }}</b
+          >{{ index === roomList.length - 1 ? "" : "," }}
+        </span>
       </div>
       <template v-slot:action="{ attrs }">
         <v-btn
@@ -124,7 +131,7 @@ import VirtualKeyboard from "../components/VirtualKeyboard.vue";
 import GameOverCard from "../components/GameOverCard.vue";
 import MiniGuess from "../components/MiniGuess.vue";
 import About from "../components/About.vue";
-import History from './History.vue';
+import History from "./History.vue";
 
 export default {
   name: "TopBar",
@@ -231,7 +238,7 @@ export default {
     currentRoom: String,
     gameState: Object,
     dialogOpen: Boolean,
-    roomCount: String,
+    roomList: Array,
     history: Boolean,
   },
   created() {

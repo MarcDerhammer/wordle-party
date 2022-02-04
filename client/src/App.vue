@@ -5,7 +5,7 @@
       :username="username"
       @menu="menu = true"
       :connected="connected"
-      :roomCount="roomCount"
+      :roomList="roomList"
       @share="share"
       @help="$refs.mainView.showInfoToast()"
       @people="$refs.mainView.showConnectionInfo()"
@@ -24,7 +24,7 @@
         :dialogOpen="dialogOpen"
         @share="share"
         ref="mainView"
-        :roomCount="roomCount"
+        :roomList="roomList"
         :history="history"
         @back="history = false"
       />
@@ -172,7 +172,6 @@ export default {
     snackbar: false,
     text: null,
     connected: false,
-    roomCount: null,
     history: false,
     roomList: [],
     selectedRoom: null,
@@ -199,7 +198,7 @@ export default {
     }
     setInterval(() => {
       if (this.currentRoom) {
-        this.$socket.emit("roomCount", this.currentRoom);
+        this.$socket.emit("roomList", this.currentRoom);
       }
     }, 5000);
 
@@ -265,7 +264,10 @@ export default {
       }
       this.username = name.substring(0, 8);
       localStorage.setItem("name", this.username);
-      this.$socket.emit("setName", this.username);
+      this.$socket.emit("setName", {
+        name: this.username,
+        version: this.$store.getters.appVersion
+      });
       this.changeUsername = false;
     },
     leave(room) {
@@ -313,14 +315,14 @@ export default {
       this.currentRoom = room;
       this.showJoin = false;
       localStorage.setItem("lastRoom", room);
-      this.$socket.emit("roomCount", this.currentRoom);
+      this.$socket.emit("roomList", this.currentRoom);
       this.existingRooms = this.existingRooms.filter((x) => x !== room);
       this.existingRooms.unshift(room);
       localStorage.setItem("existingRooms", JSON.stringify(this.existingRooms));
       this.selectedRoom = room;
     },
-    roomCount: function (count) {
-      this.roomCount = count.toString();
+    roomList: function (list) {
+      this.roomList = list;
     },
     roomLeft: function (room) {
       this.currentRoom = null;

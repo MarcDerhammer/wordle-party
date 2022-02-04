@@ -35,7 +35,29 @@ const sendRoomCount = (roomName) => {
     return;
   }
   io.to(roomName).emit("roomCount", room.size || 0);
+  sendRoomList(roomName);
 };
+const getRoomList = (roomName) => {
+  if (!roomName) {
+    return;
+  }
+  const room = io.sockets.adapter.rooms.get(roomName);
+  if (!room) {
+    return;
+  }
+  let names = [];
+  for (const client of room) {
+    s = io.sockets.sockets.get(client);
+    names.push(s.username || 'Unknown');
+  }
+  return names;
+};
+const sendRoomList = (roomName) => {
+  const list = getRoomList(roomName);
+  if (list) {
+    io.to(roomName).emit("roomList", list);
+  }
+}
 
 const buildPayload = (room) => {
   if (room.message) {
@@ -176,14 +198,23 @@ io.on("connection", (socket) => {
     socket.emit("roomNotFound", "Room not found!");
   });
   socket.on("leave", (data) => {
-    console.log(socket.username + " is leaving " + data);
+    console.log((socket.username || "Unknown") + " is leaving " + data);
     socket.leave(data);
     socket.emit("roomLeft", data);
     sendRoomCount(data);
   });
+  socket.on("disconnect", () => {
+    console.log((socket.username || "Unknown") + " disconnected");
+  });
   socket.on("setName", (data) => {
-    socket.username = data;
-    console.log(socket.username + " name set");
+    let version = "unknown"
+    if (typeof data === "string") {
+      socket.username = data;
+    } else {
+      socket.username = data.name;
+      version = data.version;
+    }
+    console.log(socket.username + ` name set [${version}]`);
   });
   socket.on("newGame", (payload) => {
     const roomName = payload.room;
@@ -369,5 +400,11 @@ io.on("connection", (socket) => {
       return;
     }
     socket.emit("roomCount", room.size || 0);
+  });
+  socket.on("roomList", (data) => {
+    const roomList = getRoomList(data);
+    if (roomList) {
+      socket.emit("roomList", roomList);
+    }
   });
 });
