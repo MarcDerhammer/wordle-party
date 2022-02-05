@@ -422,7 +422,7 @@ export default {
   --partial: #b59f3b;
   --wrong: #3a3a3c;
 
-  --correctCB: rgb(245, 121, 58);
-  --partialCB: rgb(133, 192, 249);
+  --correctCB: rgb(12, 123, 220);
+  --partialCB: #b59f3b;
 }
 </style>
