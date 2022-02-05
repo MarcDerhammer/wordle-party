@@ -57,10 +57,10 @@ export default {
       cl += " ";
       switch (status) {
         case "correct":
-          cl += "correct";
+          cl += `correct${this.colorBlind ? "CB" : ""}`;
           break;
         case "partial":
-          cl += "partial";
+          cl += `partial${this.colorBlind ? "CB" : ""}`;
           break;
         case "wrong":
           cl += "wrong";
@@ -82,8 +82,13 @@ export default {
     large: Boolean,
     history: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
+  },
+  computed: {
+    colorBlind() {
+      return this.$store.getters.colorBlind;
+    },
   },
   watch: {
     status() {
@@ -134,20 +139,32 @@ export default {
   opacity: 1;
 }
 .wrong {
-  background-color: #3a3a3c;
+  background-color: var(--wrong);
   border: unset !important;
   animation: shake 0.3s;
 }
 .partial {
-  background-color: #b59f3b;
+  background-color: var(--partial);
   border: unset !important;
   animation: yellowShadow 0.7s;
   z-index: 998;
 }
+.partialCB {
+  background-color: var(--partialCB);
+  border: unset !important;
+  animation: yellowShadowCB 0.7s;
+  z-index: 998;
+}
 .correct {
-  background-color: #538d4e;
+  background-color: var(--correct);
   border: unset !important;
   animation: greenShadow 0.8s;
+  z-index: 999;
+}
+.correctCB {
+  background-color: var(--correctCB);
+  border: unset !important;
+  animation: greenShadowCB 0.8s;
   z-index: 999;
 }
 @keyframes shake {
@@ -187,12 +204,22 @@ export default {
 }
 @keyframes greenShadow {
   0% {
-    box-shadow: 0 0 0 18px #538d4e;
+    box-shadow: 0 0 0 18px var(--correct);
   }
 }
 @keyframes yellowShadow {
   0% {
-    box-shadow: 0 0 0 12px #b59f3b;
+    box-shadow: 0 0 0 12px var(--partial);
+  }
+}
+@keyframes greenShadowCB {
+  0% {
+    box-shadow: 0 0 0 18px var(--correctCB);
+  }
+}
+@keyframes yellowShadowCB {
+  0% {
+    box-shadow: 0 0 0 12px var(--partialCB);
   }
 }
 </style>

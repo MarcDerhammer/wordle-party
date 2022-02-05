@@ -133,10 +133,16 @@ export default {
   padding-right: 32px;
 }
 .partial {
-  background-color: #b59f3b;
+  background-color: var(--partial);
 }
 .correct {
-  background-color: #538d4e;
+  background-color: var(--correct);
+}
+.partialCB {
+  background-color: var(--partialCB);
+}
+.correctCB {
+  background-color: var(--correctCB);
 }
 .disabled {
   background-color: black;

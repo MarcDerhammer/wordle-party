@@ -44,6 +44,13 @@
         </v-card-text>
         <v-card-text v-else> You are not in a room! </v-card-text>
         <v-card-actions>
+          <v-switch
+            @change="storeCB"
+            v-model="colorBlind"
+            label="Color Blind Mode"
+          ></v-switch>
+        </v-card-actions>
+        <v-card-actions>
           <v-spacer />
           <v-btn color="primary" @click="changeUsername = true"
             >Set Name
@@ -176,6 +183,7 @@ export default {
     roomList: [],
     selectedRoom: null,
     appBadge: 0,
+    colorBlind: false,
   }),
   computed: {
     version() {
@@ -186,6 +194,8 @@ export default {
     },
   },
   created() {
+    this.colorBlind = JSON.parse(localStorage.getItem("colorBlind"));
+    this.storeCB();
     this.username = localStorage.getItem("name");
     this.existingRooms = JSON.parse(
       localStorage.getItem("existingRooms") || "[]"
@@ -213,6 +223,10 @@ export default {
     });
   },
   methods: {
+    storeCB() {
+      localStorage.setItem("colorBlind", this.colorBlind);
+      this.$store.commit('setColorBlind', this.colorBlind);
+    },
     share() {
       const url = "https://wordleparty.net/" + this.currentRoom;
       if (!navigator.share) {
@@ -254,7 +268,7 @@ export default {
         room: this.currentRoom,
         word,
         message,
-        hardMode
+        hardMode,
       });
       this.showNewGame = false;
     },
@@ -266,7 +280,7 @@ export default {
       localStorage.setItem("name", this.username);
       this.$socket.emit("setName", {
         name: this.username,
-        version: this.$store.getters.appVersion
+        version: this.$store.getters.appVersion,
       });
       this.changeUsername = false;
     },
@@ -336,7 +350,10 @@ export default {
     },
     gameState: function (state) {
       // todo.. better
-      if (!this.gameState.state && (state.custom || state.message || state.hardMode)) {
+      if (
+        !this.gameState.state &&
+        (state.custom || state.message || state.hardMode)
+      ) {
         this.$refs.mainView.showInfoToast();
       }
 
@@ -398,3 +415,14 @@ export default {
   },
 };
 </script>
+
+<style>
+:root {
+  --correct: #538d4e;
+  --partial: #b59f3b;
+  --wrong: #3a3a3c;
+
+  --correctCB: rgb(245, 121, 58);
+  --partialCB: rgb(133, 192, 249);
+}
+</style>

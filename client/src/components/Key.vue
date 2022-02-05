@@ -21,6 +21,11 @@ export default {
   name: "Key",
   components: {},
   data: () => ({}),
+  computed: {
+    colorBlind() {
+      return this.$store.getters.colorBlind;
+    },
+  },
   props: {
     l: String,
     allGuesses: Array,
@@ -51,12 +56,12 @@ export default {
       if (
         this.allGuesses.find((x) => x.letter === l && x.status === "correct")
       ) {
-        return "key correct";
+        return "key " + `correct${this.colorBlind ? "CB" : ""}`;
       }
       if (
         this.allGuesses.find((x) => x.letter === l && x.status === "partial")
       ) {
-        return "key partial";
+        return "key " + `partial${this.colorBlind ? "CB" : ""}`;
       }
       if (this.allGuesses.find((x) => x.letter === l && x.status === "wrong")) {
         return "key disabled";
