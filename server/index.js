@@ -23,6 +23,11 @@ if (fs.existsSync("./rooms.json")) {
   rooms = require("./rooms.json");
 }
 
+const socketLog = (socket, room, message) => {
+  const ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
+  console.log(`[${room ? room : '....'}] (${socket.username ? socket.username : ''}) ${message} (${ip})`);
+}
+
 const saveRoomsState = () => {
   fs.writeFileSync("./rooms.json", JSON.stringify(rooms));
 };
@@ -80,7 +85,6 @@ const buildPayload = (room) => {
 const emitGameState = (roomName) => {
   const room = rooms.find((x) => x.name === roomName);
   if (!room) {
-    console.log(room + " not found?!");
     return;
   }
 
@@ -166,9 +170,8 @@ server.listen(PORT, () => {
 });
 
 io.on("connection", (socket) => {
-  console.log("A user has connected!");
+  socketLog(socket, null, "A user has connected");
   socket.on("create", (data) => {
-    console.log("Create called with: " + data);
     const roomName = getUnusedRoomCode();
     rooms = rooms.filter((x) => x.name != roomName);
     rooms.push({
@@ -180,14 +183,13 @@ io.on("connection", (socket) => {
       message: data.message,
       username: socket.username,
     });
+    socketLog(socket, roomName, "New room created!");
     socket.emit("roomCreated", roomName);
     emitGameState(roomName);
     saveRoomsState();
   });
   socket.on("join", (data) => {
-    console.log(
-      `${socket.username || "[unknown]"} is attempting to join ${data}`
-    );
+    socketLog(socket, null, "Attempting to join " + data)
     if (rooms.find((x) => x.name === data)) {
       socket.join(data);
       socket.emit("roomJoined", data);
@@ -195,36 +197,35 @@ io.on("connection", (socket) => {
       sendRoomCount(data);
       return;
     }
+    socketLog(socket, null, "Room was not found! " + data);
     socket.emit("roomNotFound", "Room not found!");
   });
   socket.on("leave", (data) => {
-    console.log((socket.username || "Unknown") + " is leaving " + data);
+    socketLog(socket, data, "User leaving room")
     socket.leave(data);
     socket.emit("roomLeft", data);
     sendRoomCount(data);
   });
   socket.on("disconnect", () => {
-    console.log((socket.username || "Unknown") + " disconnected");
+    socketLog(socket, null, "User Disconnected")
   });
   socket.on("setName", (data) => {
     let version = "unknown"
     if (typeof data === "string") {
-      socket.username = data;
+      socket.username = data.trim();
     } else {
-      socket.username = data.name;
+      socket.username = data.name.trim();
       version = data.version;
     }
-    const ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
-    console.log(socket.username + ` name set [${version}] from ${ip}`);
+
+    socketLog(socket, null, `Name set. [${version}]`)
   });
   socket.on("newGame", (payload) => {
     const roomName = payload.room;
-    console.log(
-      "New game called by " + socket.username || "[Unknown]" + " in " + roomName
-    );
+    socketLog(socket, roomName, "Called new game!");
     const existingRoom = rooms.find((x) => x.name === roomName);
     if (!existingRoom || !existingRoom.done) {
-      console.log("Game is not over yet...");
+      socketLog(socket, roomName, "Game is not over yet! Returning..");
       return;
     }
 
@@ -262,9 +263,7 @@ io.on("connection", (socket) => {
   socket.on("guess", (data) => {
     const word = data.word.toUpperCase().trim().substring(0, 5);
     const channel = data.room;
-    console.log(
-      `${socket.username || "[unknown]"} guessed "${word}" in ${channel}`
-    );
+    socketLog(socket, channel, `guessed "${word}"`);
     const room = rooms.find((x) => x.name === data.room);
     const correctWord = room.word;
     if (room.won || room.lost || room.done) {
@@ -275,7 +274,7 @@ io.on("connection", (socket) => {
       !fullValidWordList.includes(word.toLowerCase()) &&
       word !== correctWord
     ) {
-      console.log(`${word} is an invalid guess`);
+      socketLog(socket, data.room, `Invalid guess "${word}"`);
       socket.emit("badGuess", word);
       return;
     }
@@ -288,7 +287,7 @@ io.on("connection", (socket) => {
       )
     ) {
       // TOO FAST
-      console.log(`Rate limit.. slow down`);
+      socketLog(socket, data.room, "Rate limited...");
       socket.emit("tooFast", word);
       return;
     }
@@ -342,7 +341,7 @@ io.on("connection", (socket) => {
       for (let i = 0; i < correctWord.length; i++) {
         if (lastRow[i].status === 'correct' && newRow[i].letter !== lastRow[i].letter) {
           socket.emit("badGuessHardGreen", word);
-          console.log('Hard mode detected not using same green: ' + newRow[i].letter);
+          socketLog(socket, data.room, "Hard mode rule: Didn't use same green " + newRow[i].letter)
           return;
         }
       }
@@ -352,7 +351,7 @@ io.on("connection", (socket) => {
       for (let i = 0; i < partials.length; i++) {
         if (!newWordCopy.includes(partials[i].letter)) {
           socket.emit("badGuessHardYellow", word);
-          console.log('Hard mode detected not using a yellow: ' + partials[i].letter);
+          socketLog(socket, data.room, "Hard mode rule: Didn't use a yellow " + partials[i].letter);
           return;
         }
         newWordCopy.replace(partials[i].letter, '.');
@@ -368,13 +367,13 @@ io.on("connection", (socket) => {
     if (correctWord === word) {
       room.won = true;
       room.done = true;
-      console.log(`${channel} won their game!`);
+      socketLog(socket, channel, "Game was won!");
       io.to(channel).emit("win", room.state.length);
     } else if (room.state.length === 6) {
       room.lost = true;
       room.done = true;
       room.answerWas = correctWord;
-      console.log(`${channel} lost their game! (${correctWord})`);
+      socketLog(socket, channel, `Game lost! (${correctWord})`);
       io.to(channel).emit("lose", correctWord);
     }
     if (room.done) {
